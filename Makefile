@@ -1,10 +1,15 @@
-CFLAGS=-Os -g -pipe -W -Wall -Werror
+# Copyright 2015, Jeffrey E. Bedard
 
-all: batwarn
-batwarn: batwarn.o
-batwarn.o: batwarn.c
+CFLAGS=-Os -g -pipe -W -Wall -Werror
+#CFLAGS+=-DDEBUG
+
+PROG=batwarn
+all: ${PROG}
+OBJS=${PROG}.o main.o signal.o
+${PROG}: ${OBJS}
+	cc -o ${PROG} ${OBJS}
 clean:
-	rm batwarn.o batwarn
+	rm ${PROG} ${OBJS}
 install:
-	install -s batwarn /usr/local/bin
+	install -s ${PROG} /usr/local/bin
 
