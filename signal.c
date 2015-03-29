@@ -1,4 +1,6 @@
-#include "batwarn.h"
+#include "gamma.h"
+#include "config.h"
+
 #include <signal.h>
 #include <stdlib.h>
 

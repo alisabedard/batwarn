@@ -5,11 +5,11 @@ CFLAGS=-Os -g -pipe -W -Wall -Werror
 
 PROG=batwarn
 all: ${PROG}
-OBJS=${PROG}.o main.o signal.o
+OBJS=${PROG}.o main.o signal.o gamma.o
 ${PROG}: ${OBJS}
 	cc -o ${PROG} ${OBJS}
 clean:
-	rm ${PROG} ${OBJS}
+	rm -f ${PROG} ${OBJS}
 install:
 	install -s ${PROG} /usr/local/bin
 
