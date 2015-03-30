@@ -14,16 +14,25 @@
 
 static void
 parse_command_line(int argc, char** argv)
-{  
+{
+#if 0
 	int opt;
-	
-           while ((opt = getopt(argc, argv, "")) != -1) {
-		   switch(opt) {
-               default: 
-                   fprintf(stderr, "Usage: %s\n", argv[0]);
-                   exit(EX_USAGE);
-               }
-           }
+
+	while ((opt = getopt(argc, argv, "")) != -1) {
+		switch (opt) {
+		default:
+			fprintf(stderr, "Usage: %s\n", argv[0]);
+			exit(EX_USAGE);
+		}
+	}
+#endif
+	/* The above code is to provide command line argument support if
+	 necessary.  For now, no command line arguments are supported.  */
+	if(argc>1)
+	{
+		fprintf(stderr, "Usage: %s\n", argv[0]);
+		exit(EX_USAGE);
+	}
 }
 
 int
