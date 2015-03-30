@@ -3,6 +3,7 @@
 
 #include <signal.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 static void 
 signal_handler()
@@ -22,4 +23,3 @@ setup_signal_handler()
 	sa.sa_handler=signal_handler;
 	sigaction(SIGINT, &sa, NULL);
 }
-

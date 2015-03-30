@@ -7,4 +7,19 @@
         <activeConfTypeElem>0</activeConfTypeElem>
         <activeConfIndexElem>0</activeConfIndexElem>
     </data>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/jefbed/src/batwarn/gamma.h</file>
+            <file>file:/home/jefbed/src/batwarn/batwarn.h</file>
+            <file>file:/home/jefbed/src/batwarn/signal.c</file>
+            <file>file:/home/jefbed/src/batwarn/main.c</file>
+            <file>file:/home/jefbed/src/batwarn/signal.h</file>
+            <file>file:/home/jefbed/src/batwarn/batwarn.c</file>
+            <file>file:/home/jefbed/src/batwarn/gamma.c</file>
+            <file>file:/home/jefbed/src/batwarn/README.md</file>
+            <file>file:/home/jefbed/src/batwarn/config.h</file>
+            <file>file:/home/jefbed/src/batwarn/Makefile</file>
+        </group>
+    </open-files>
 </project-private>

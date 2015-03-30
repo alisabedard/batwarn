@@ -1,11 +1,12 @@
 # Copyright 2015, Jeffrey E. Bedard
 
+#CFLAGS=-Os -g -pipe -W -Wall -Werror -DDEBUG
 CFLAGS=-Os -g -pipe -W -Wall -Werror
-#CFLAGS+=-DDEBUG
-
 PROG=batwarn
+
+
 all: ${PROG}
-OBJS=${PROG}.o main.o signal.o gamma.o
+OBJS=$(patsubst %.c,%.o,$(wildcard *.c))
 ${PROG}: ${OBJS}
 	cc -o ${PROG} ${OBJS}
 clean:

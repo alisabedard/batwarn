@@ -38,6 +38,8 @@ main(int argc, char** argv)
 	setup_signal_handler();
 	batwarn_start_checking();
 
+#ifndef DEBUG
 end:
+#endif /* !DEBUG */
 	return EX_OK;
 }

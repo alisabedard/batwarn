@@ -7,13 +7,31 @@
 #include <stdbool.h>
 #include <unistd.h>
 
+static bool
+is_on_ac()
+{
+	FILE *f;
+	char buf;
+
+	f = fopen(ACSYSFILE, "r");
+	if (!f) {
+		perror(ACSYSFILE);
+		return false;
+	}
+	fread(&buf, 1, 1, f);
+	fclose(f);
+
+	return (bool) (buf - '0');
+}
+
 static uint8_t
 get_charge()
 {
 #ifdef IBAM
 	/* Command to parse */
 	const char *command = "ibam --percentbattery";
-	/* 'ibam --percentbattery | head -n1 | wc' - 3 to determine buffer size */
+	/* 'ibam --percentbattery | head -n1 | wc' - 3 
+	 * to determine buffer size */
 	const uint8_t size = 31;
 	/* Characters until ':' in program output */
 	const uint8_t offset = 20;
@@ -26,6 +44,10 @@ get_charge()
 	char buf[size];
 	uint8_t out;
 
+	/* Indicate good battery status when AC power is restored to restore
+	   gamma more quickly.  */
+	if (is_on_ac())
+		return 100;
 
 #ifdef IBAM	
 	file = popen(command, "r");
