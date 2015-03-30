@@ -2,14 +2,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <X11/Xlib.h>
+#include <X11/extensions/xf86vmode.h>
 
 void
-batwarn_set_gamma(const float value)
+batwarn_set_gamma(const float gamma)
 {
-	char * cmd = XGAMMA_CMD;
-	const uint8_t buf_size = 14 + sizeof (cmd);
-	char buf[buf_size];
-
-	snprintf(buf, buf_size, "%s %f", cmd, value);
-	system(buf);
+	Display *dpy;
+	XF86VidModeGamma g;
+	
+	dpy=XOpenDisplay(getenv("DISPLAY"));
+	g.red=g.blue=g.green=gamma;
+	
+	XF86VidModeSetGamma(dpy, DefaultScreen(dpy), &g);
+	XCloseDisplay(dpy);
 }

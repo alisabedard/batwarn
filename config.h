@@ -18,7 +18,7 @@ extern "C" {
 #define SYSFILE "/sys/class/power_supply/BAT0/capacity"
 #define ACSYSFILE "/sys/class/power_supply/AC/online"
 #define XGAMMA_CMD "xgamma -q -gamma"
-#define GAMMA_NORMAL 1.25
+#define GAMMA_NORMAL 1.0
 #define GAMMA_WARNING 5.0
 
 #ifdef	__cplusplus
