@@ -76,20 +76,24 @@ get_charge()
 }
 
 static void
-handle_low_battery(bool *been_low, bool *gamma_normal)
+handle_low_battery(bool *been_low, bool *gamma_normal, const uint8_t charge)
 {
 	if (!*been_low) {
 		batwarn_set_gamma(GAMMA_WARNING);
 		*gamma_normal = false;
 		*been_low = true;
 	}
+	if(charge<CRIT_PERCENT)
+	{
+		system(SUSPEND_CMD);
+	}
 }
 
 static void
-handle_normal_battery(bool *been_low, bool *gamma_normal)
+handle_normal_battery(bool *been_low, bool *gamma_normal, const uint8_t charge)
 {
 	if (!*gamma_normal) {
-		batwarn_set_gamma(GAMMA_NORMAL);
+		batwarn_set_gamma(charge>FULL_PERCENT?GAMMA_FULL:GAMMA_NORMAL);
 		*gamma_normal = true;
 		*been_low = false;
 	}
@@ -101,11 +105,15 @@ batwarn_start_checking()
 	bool been_low, gamma_normal;
 check:
 	gamma_normal = been_low = false;
-
-	if (get_charge() > LOW_PERCENT)
-		handle_normal_battery(&been_low, &gamma_normal);
+{
+	uint8_t charge;
+	
+	charge=get_charge();
+	if (charge > LOW_PERCENT)
+		handle_normal_battery(&been_low, &gamma_normal, charge);
 	else
-		handle_low_battery(&been_low, &gamma_normal);
+		handle_low_battery(&been_low, &gamma_normal, charge);
+}
 	sleep(been_low ? 1 : WAIT);
 	goto check;
 }
