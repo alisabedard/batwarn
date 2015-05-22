@@ -16,5 +16,5 @@ ${PROG}: ${OBJS}
 clean:
 	rm -f ${PROG} ${OBJS}
 install:
-	install -s ${PROG} ${PREFIX}/bin/
+	install -s ${PROG} ${DESTDIR}${PREFIX}/bin/
 
