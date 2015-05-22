@@ -1,2 +1,0 @@
-cc -Os -g -pipe -W -Wall -Werror -DDEBUG   -c -o batwarn.o batwarn.c
-cc -o batwarn batwarn.o
