@@ -1,8 +1,11 @@
 # Copyright 2015, Jeffrey E. Bedard
 
+# Install location:
+PREFIX=/usr
+
 #CFLAGS=-Os -g -pipe -W -Wall -Werror -DDEBUG
+#CFLAGS=-Os -g -pipe -W -Wall -Werror
 LIBS=-lX11 -lXxf86vm
-CFLAGS=-Os -g -pipe -W -Wall -Werror
 PROG=batwarn
 
 
@@ -13,5 +16,5 @@ ${PROG}: ${OBJS}
 clean:
 	rm -f ${PROG} ${OBJS}
 install:
-	install -s ${PROG} /usr/local/bin
+	install -s ${PROG} ${PREFIX}/bin/
 
