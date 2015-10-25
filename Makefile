@@ -2,7 +2,8 @@
 
 # Install location:
 PREFIX=/usr
-CFLAGS=-Os -Wall -W -Werror
+#CFLAGS=-Os 
+#CFLAGS+=-Wall -W -Werror
 LIBS=-lX11 -lXxf86vm
 PROG=batwarn
 
