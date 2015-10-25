@@ -9,16 +9,14 @@
 #define	SIGNAL_H
 
 #ifdef	__cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-void
-setup_signal_handler();
-
+	void setup_signal_handler();
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* SIGNAL_H */
-
+#endif				/* SIGNAL_H */

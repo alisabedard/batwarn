@@ -7,93 +7,78 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-static bool
+static FILE *
+try_open(const char *fn)
+{
+	FILE *f;
+
+	f = fopen(fn, "r");
+	if(!f)
+	{
+		perror(fn);
+		exit(1);
+	}
+	return f;
+}
+
+static inline bool
 is_on_ac()
 {
 	FILE *f;
 	char buf;
 
-	f = fopen(ACSYSFILE, "r");
-	if (!f) {
-		perror(ACSYSFILE);
-		return false;
-	}
+	f = try_open(ACSYSFILE);
 	fread(&buf, 1, 1, f);
 	fclose(f);
 
 	return (bool) (buf - '0');
 }
 
-static uint8_t
+static inline uint8_t
 get_charge()
 {
-#ifdef IBAM
-	/* Command to parse */
-	const char *command = "ibam --percentbattery";
-	/* 'ibam --percentbattery | head -n1 | wc' - 3 
-	 * to determine buffer size */
-	const uint8_t size = 31;
-	/* Characters until ':' in program output */
-	const uint8_t offset = 20;
-#else
 	const uint8_t size = 4;
-	const char *sysfile = SYSFILE;
-#endif
 
-	FILE *file;
+	FILE *f;
 	char buf[size];
 	uint8_t out;
 
 	/* Indicate good battery status when AC power is restored to restore
 	   gamma more quickly.  */
-	if (is_on_ac())
+	if(is_on_ac())
 		return 100;
-
-#ifdef IBAM	
-	file = popen(command, "r");
-#else /* !IBAM */
-	file = fopen(sysfile, "r");
-#endif /* IBAM */
-	if (!file)
-		exit(1);
-	fread(&buf, size, 1, file);
-
-#ifdef IBAM
-	pclose(file);
-#else /* !IBAM */
-	fclose(file);
-#endif /* IBAM */
-	out = (uint8_t) atoi(buf
-#ifdef IBAM
-		+ offset
-#endif /* IBAM */
-		);
-#ifdef DEBUG
-	printf("Charge is %d\n", out);
-#endif /* DEBUG */
+	f = try_open(BATSYSFILE);
+	fread(&buf, size, 1, f);
+	fclose(f);
+	out = (uint8_t) atoi(buf);
 
 	return out;
 }
 
 static void
-handle_low_battery(bool *been_low, bool *gamma_normal, const uint8_t charge)
+handle_low_battery(bool * been_low, bool * gamma_normal,
+	const uint8_t charge)
 {
-	if (!*been_low) {
+	if(!*been_low)
+	{
 		batwarn_set_gamma(GAMMA_WARNING);
 		*gamma_normal = false;
 		*been_low = true;
 	}
-	if(charge<CRIT_PERCENT)
+	if(charge < CRIT_PERCENT)
 	{
 		system(SUSPEND_CMD);
 	}
 }
 
 static void
-handle_normal_battery(bool *been_low, bool *gamma_normal, const uint8_t charge)
+handle_normal_battery(bool * been_low, bool * gamma_normal,
+	const uint8_t charge)
 {
-	if (!*gamma_normal) {
-		batwarn_set_gamma(charge>FULL_PERCENT?GAMMA_FULL:GAMMA_NORMAL);
+	if(!*gamma_normal)
+	{
+		batwarn_set_gamma(charge >
+			FULL_PERCENT ? GAMMA_FULL : GAMMA_NORMAL);
 		*gamma_normal = true;
 		*been_low = false;
 	}
@@ -103,17 +88,22 @@ void
 batwarn_start_checking()
 {
 	bool been_low, gamma_normal;
-check:
+      check:
 	gamma_normal = been_low = false;
-{
-	uint8_t charge;
-	
-	charge=get_charge();
-	if (charge > LOW_PERCENT)
-		handle_normal_battery(&been_low, &gamma_normal, charge);
-	else
-		handle_low_battery(&been_low, &gamma_normal, charge);
-}
+	{
+		uint8_t charge;
+
+		charge = get_charge();
+#ifdef DEBUG
+		printf("Charge is %d\n", charge);
+#endif /* DEBUG */
+		if(charge > LOW_PERCENT)
+			handle_normal_battery(&been_low,
+				&gamma_normal, charge);
+		else
+			handle_low_battery(&been_low, &gamma_normal,
+				charge);
+	}
 	sleep(been_low ? 1 : WAIT);
 	goto check;
 }

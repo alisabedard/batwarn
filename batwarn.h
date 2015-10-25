@@ -9,15 +9,14 @@
 #define	BATWARN_H
 
 #ifdef	__cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-void
-batwarn_start_checking();
+	void batwarn_start_checking();
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* BATWARN_H */
-
+#endif				/* BATWARN_H */

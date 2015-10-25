@@ -9,16 +9,16 @@
 #define	CONFIG_H
 
 #ifdef	__cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #define LOW_PERCENT 10
 #define CRIT_PERCENT 5
-#define FULL_PERCENT 90 
+#define FULL_PERCENT 90
 #define WAIT 60
-#define SYSFILE "/sys/class/power_supply/BAT0/capacity"
+#define BATSYSFILE "/sys/class/power_supply/BAT0/capacity"
 #define ACSYSFILE "/sys/class/power_supply/AC/online"
-#define XGAMMA_CMD "xgamma -q -gamma"
 #define SUSPEND_CMD "systemctl suspend"
 #define GAMMA_NORMAL    1.0
 #define GAMMA_FULL      1.3
@@ -28,5 +28,4 @@ extern "C" {
 }
 #endif
 
-#endif	/* CONFIG_H */
-
+#endif				/* CONFIG_H */

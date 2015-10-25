@@ -2,12 +2,9 @@
 
 # Install location:
 PREFIX=/usr
-
-#CFLAGS=-Os -g -pipe -W -Wall -Werror -DDEBUG
-#CFLAGS=-Os -g -pipe -W -Wall -Werror
+CFLAGS=-Os -Wall -W -Werror
 LIBS=-lX11 -lXxf86vm
 PROG=batwarn
-
 
 all: ${PROG}
 OBJS=$(patsubst %.c,%.o,$(wildcard *.c))

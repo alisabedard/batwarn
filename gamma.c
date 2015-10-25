@@ -10,10 +10,10 @@ batwarn_set_gamma(const float gamma)
 {
 	Display *dpy;
 	XF86VidModeGamma g;
-	
-	dpy=XOpenDisplay(getenv("DISPLAY"));
-	g.red=g.blue=g.green=gamma;
-	
+
+	dpy = XOpenDisplay(getenv("DISPLAY"));
+	g.red = g.blue = g.green = gamma;
+
 	XF86VidModeSetGamma(dpy, DefaultScreen(dpy), &g);
 	XCloseDisplay(dpy);
 }

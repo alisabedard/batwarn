@@ -13,13 +13,15 @@
 #include "batwarn.h"
 
 static void
-parse_command_line(int argc, char** argv)
+parse_command_line(int argc, char **argv)
 {
 #if 0
 	int opt;
 
-	while ((opt = getopt(argc, argv, "")) != -1) {
-		switch (opt) {
+	while((opt = getopt(argc, argv, "")) != -1)
+	{
+		switch (opt)
+		{
 		default:
 			fprintf(stderr, "Usage: %s\n", argv[0]);
 			exit(EX_USAGE);
@@ -27,8 +29,8 @@ parse_command_line(int argc, char** argv)
 	}
 #endif
 	/* The above code is to provide command line argument support if
-	 necessary.  For now, no command line arguments are supported.  */
-	if(argc>1)
+	   necessary.  For now, no command line arguments are supported.  */
+	if(argc > 1)
 	{
 		fprintf(stderr, "Usage: %s\n", argv[0]);
 		exit(EX_USAGE);
@@ -36,11 +38,11 @@ parse_command_line(int argc, char** argv)
 }
 
 int
-main(int argc, char** argv)
+main(int argc, char **argv)
 {
 	parse_command_line(argc, argv);
 #ifndef DEBUG
-	if (fork() != 0)
+	if(fork() != 0)
 		goto end;
 #endif /* !DEBUG */
 	nice(19);
@@ -48,7 +50,7 @@ main(int argc, char** argv)
 	batwarn_start_checking();
 
 #ifndef DEBUG
-end:
+      end:
 #endif /* !DEBUG */
 	return EX_OK;
 }
