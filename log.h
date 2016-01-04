@@ -3,6 +3,11 @@
 #ifndef LOG_H
 #define LOG_H
 
+#include <stdlib.h>
+#ifdef STDIO
+#include <stdio.h>
+#endif//STDIO
+
 #ifdef STDIO
 #define ERROR(code, msg) {perror(msg); exit(code);}
 #else//!STDIO

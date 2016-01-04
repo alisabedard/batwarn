@@ -8,10 +8,10 @@ CFLAGS=-Os -Wall -W
 #CFLAGS+=-DDEBUG
 
 # Uncomment to enable suspend at critical battery
-#CFLAGS+=-DSUSPEND
+CFLAGS+=-DSUSPEND
 
 # Uncomment to enable stdio output
-#CFLAGS+=-DSTDIO
+CFLAGS+=-DSTDIO
 
 LIBS=-lX11 -lXxf86vm
 PROG=batwarn
