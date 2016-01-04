@@ -3,11 +3,6 @@
 #ifndef BATWARN_H
 #define	BATWARN_H
 
-#include "config.h"
-#include "gamma.h"
-#include "signal.h"
-#include "log.h"
-
 void 
 batwarn_start_checking();
 

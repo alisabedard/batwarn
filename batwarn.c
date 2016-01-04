@@ -1,15 +1,17 @@
 // batwarn - (C) 2015-2016 Jeffrey E. Bedard
 
-#include "batwarn.h"
-
 #define _POSIX_C_SOURCE 1
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
 #include <stdbool.h>
-#include <unistd.h>
 #include <errno.h>
+#include <unistd.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <sysexits.h>
+#include "config.h"
+#include "log.h"
+#include "gamma.h"
+#include "signal.h"
 
 static FILE *
 try_open(const char *fn)

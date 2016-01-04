@@ -1,9 +1,5 @@
 // batwarn - (C) 2015-2016 Jeffrey E. Bedard
 
-#include "config.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/xf86vmode.h>
 

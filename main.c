@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 #include "batwarn.h"
+#include "signal.h"
 
 int
 main(void)
