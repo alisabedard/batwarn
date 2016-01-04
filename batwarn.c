@@ -1,109 +1,113 @@
-#include "config.h"
-#include "gamma.h"
+// batwarn - (C) 2015-2016 Jeffrey E. Bedard
 
+#include "batwarn.h"
+
+#define _POSIX_C_SOURCE 1
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <errno.h>
+#include <sysexits.h>
 
 static FILE *
 try_open(const char *fn)
 {
-	FILE *f;
-
-	f = fopen(fn, "r");
-	if(!f)
-	{
-		perror(fn);
-		exit(1);
-	}
+	FILE *f=fopen(fn, "r");
+	if(!f) ERROR(EX_NOINPUT, fn);
 	return f;
 }
 
-static inline bool
+static bool
 is_on_ac()
 {
-	FILE *f;
 	char buf;
-
-	f = try_open(ACSYSFILE);
-	fread(&buf, 1, 1, f);
+	FILE *f=try_open(ACSYSFILE);
+	const size_t r=fread(&buf, 1, 1, f);
 	fclose(f);
-
-	return (bool) (buf - '0');
+	LOG("Buffer for ACSYSFILE: %d", buf-'0');
+	return r?buf-'0':true;
 }
 
-static inline uint8_t
+static int8_t
 get_charge()
 {
-	const uint8_t size = 4;
-
-	FILE *f;
-	char buf[size];
-	uint8_t out;
-
 	/* Indicate good battery status when AC power is restored to restore
 	   gamma more quickly.  */
 	if(is_on_ac())
 		return 100;
-	f = try_open(BATSYSFILE);
-	fread(&buf, size, 1, f);
+	const uint8_t sz=4;
+	char buf[sz];
+	FILE *f=try_open(BATSYSFILE);
+	const size_t r=fread(&buf, 1, sz, f);
+	if(!r) ERROR(EX_NOINPUT, "Could not get charge");
 	fclose(f);
-	out = (uint8_t) atoi(buf);
-
-	return out;
+	LOG("Buffer for BATSYSFILE: %s", buf);
+	return (uint8_t) atoi(buf);
 }
 
+#define BEEN_LOW 1
+#define GAMMA_IS_NORMAL 2
+
 static void
-handle_low_battery(bool * been_low, bool * gamma_normal,
-	const uint8_t charge)
+handle_low_battery(uint8_t *flags , const uint8_t charge 
+#ifndef SUSPEND
+	__attribute__((unused)))
+#else//SUSPEND
+	)
+#endif//!SUSPEND
 {
-	if(!*been_low)
+	if(!(*flags&BEEN_LOW))
 	{
 		batwarn_set_gamma(GAMMA_WARNING);
-		*gamma_normal = false;
-		*been_low = true;
+		*flags&=~GAMMA_IS_NORMAL;
+		*flags|=BEEN_LOW;
 	}
+#ifdef SUSPEND
 	if(charge < CRIT_PERCENT)
 	{
-		system(SUSPEND_CMD);
+		const int r=system(SUSPEND_CMD);
+		LOG("%s RETURNED %d", SUSPEND_CMD, r);
+		if(r)
+		{
+#ifdef STDIO
+			fprintf(stderr, "Could not execute %s.",
+				SUSPEND_CMD);
+#endif//STDIO
+			exit(EX_UNAVAILABLE);
+		}
 	}
+#endif//SUSPEND
 }
 
 static void
-handle_normal_battery(bool * been_low, bool * gamma_normal,
-	const uint8_t charge)
+handle_normal_battery(uint8_t *flags, const uint8_t charge)
 {
-	if(!*gamma_normal)
+	if(!(*flags&GAMMA_IS_NORMAL))
 	{
 		batwarn_set_gamma(charge >
 			FULL_PERCENT ? GAMMA_FULL : GAMMA_NORMAL);
-		*gamma_normal = true;
-		*been_low = false;
+		*flags|=GAMMA_IS_NORMAL;
+		*flags&=~BEEN_LOW;
 	}
 }
 
 void
 batwarn_start_checking()
 {
-	bool been_low, gamma_normal;
-      check:
-	gamma_normal = been_low = false;
+	uint8_t flags=0;
+check:
 	{
-		uint8_t charge;
-
-		charge = get_charge();
+		const uint8_t charge = get_charge();
 #ifdef DEBUG
 		printf("Charge is %d\n", charge);
 #endif /* DEBUG */
 		if(charge > LOW_PERCENT)
-			handle_normal_battery(&been_low,
-				&gamma_normal, charge);
+			handle_normal_battery(&flags, charge);
 		else
-			handle_low_battery(&been_low, &gamma_normal,
-				charge);
+			handle_low_battery(&flags, charge);
 	}
-	sleep(been_low ? 1 : WAIT);
+	sleep(flags&BEEN_LOW? 1 : WAIT);
 	goto check;
 }

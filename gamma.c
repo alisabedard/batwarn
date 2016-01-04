@@ -1,3 +1,5 @@
+// batwarn - (C) 2015-2016 Jeffrey E. Bedard
+
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,12 +10,8 @@
 void
 batwarn_set_gamma(const float gamma)
 {
-	Display *dpy;
-	XF86VidModeGamma g;
-
-	dpy = XOpenDisplay(getenv("DISPLAY"));
-	g.red = g.blue = g.green = gamma;
-
+	Display *dpy = XOpenDisplay(NULL);
+	XF86VidModeGamma g={.red=gamma,.blue=gamma,.green=gamma};
 	XF86VidModeSetGamma(dpy, DefaultScreen(dpy), &g);
 	XCloseDisplay(dpy);
 }

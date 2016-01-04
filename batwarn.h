@@ -1,22 +1,14 @@
-/* 
- * File:   batwarn.h
- * Author: jefbed
- *
- * Created on March 27, 2015, 11:56 PM
- */
+// batwarn - (C) 2015-2016 Jeffrey E. Bedard
 
 #ifndef BATWARN_H
 #define	BATWARN_H
 
-#ifdef	__cplusplus
-extern "C"
-{
-#endif
+#include "config.h"
+#include "gamma.h"
+#include "signal.h"
+#include "log.h"
 
-	void batwarn_start_checking();
+void 
+batwarn_start_checking();
 
-#ifdef	__cplusplus
-}
-#endif
-
-#endif				/* BATWARN_H */
+#endif//BATWARN_H

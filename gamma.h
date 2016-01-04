@@ -1,9 +1,4 @@
-/* 
- * File:   gamma.h
- * Author: jefbed
- *
- * Created on March 29, 2015, 2:51 AM
- */
+// batwarn - (C) 2015-2016 Jeffrey E. Bedard
 
 #ifndef GAMMA_H
 #define	GAMMA_H

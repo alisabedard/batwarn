@@ -1,9 +1,11 @@
-#include "gamma.h"
-#include "config.h"
+// batwarn - (C) 2015-2016 Jeffrey E. Bedard
 
-#include <signal.h>
+#define _POSIX_C_SOURCE 1
 #include <stdlib.h>
 #include <stdio.h>
+#include <signal.h>
+#include "gamma.h"
+#include "config.h"
 
 static void
 signal_handler()
