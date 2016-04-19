@@ -1,23 +1,25 @@
 // batwarn - (C) 2015-2016 Jeffrey E. Bedard
 
-#define _POSIX_C_SOURCE 1
 #include <signal.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include "log.h"
 #include "gamma.h"
 #include "config.h"
 
-static void
-cb()
+static void restore_gamma(void) // Program exited
 {
+	fputs("Restoring gamma...\n", stderr);
 	batwarn_set_gamma(GAMMA_NORMAL);
-	LOG("Signal received!");
-	exit(0);
 }
 
-void
-setup_signal_handler()
+static void cb() // Signal received
 {
-	struct sigaction sa={.sa_handler=cb};
-	sigaction(SIGINT, &sa, NULL);
+	fputs("Signal received...\n", stderr);
+	exit(1); // calls restore_gamma via atexit.  
+}
+
+void setup_signal_handler(void)
+{
+	sigaction(SIGINT, &(struct sigaction){.sa_handler=cb}, NULL);
+	atexit(restore_gamma);
 }

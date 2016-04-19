@@ -2,22 +2,16 @@
 
 # Install location:
 PREFIX=/usr
-CFLAGS=-Os -Wall -W
-
-# Uncomment to enable debugging code
+CFLAGS+=-Wall -W
+CFLAGS+=-ggdb
 #CFLAGS+=-DDEBUG
-
-# Uncomment to enable suspend at critical battery
-CFLAGS+=-DSUSPEND
-
-# Uncomment to enable stdio output
-CFLAGS+=-DSTDIO
 
 LIBS=-lX11 -lXxf86vm
 PROG=batwarn
 all: ${PROG}
 OBJS=$(patsubst %.c,%.o,$(wildcard *.c))
-CFLAGS+=-std=c99 
+CFLAGS+=-std=c11
+CFLAGS+=-D_XOPEN_SOURCE=700
 ${PROG}: ${OBJS}
 	cc -o ${PROG} ${OBJS} ${LIBS}
 clean:

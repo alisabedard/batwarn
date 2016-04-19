@@ -3,7 +3,6 @@
 #ifndef GAMMA_H
 #define	GAMMA_H
 
-void 
-batwarn_set_gamma(const float value);
+void batwarn_set_gamma(const float value);
 
 #endif//GAMMA_H
