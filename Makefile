@@ -3,7 +3,7 @@
 # Install location:
 PREFIX=/usr
 CFLAGS+=-Wall -W
-CFLAGS+=-ggdb
+#CFLAGS+=-ggdb
 #CFLAGS+=-DDEBUG
 
 LIBS=-lX11 -lXxf86vm

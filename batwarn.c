@@ -1,5 +1,7 @@
 // batwarn - (C) 2015-2016 Jeffrey E. Bedard
 
+#include "batwarn.h"
+
 #include <errno.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -7,7 +9,6 @@
 #include <stdlib.h>
 #include <sysexits.h>
 #include <unistd.h>
-#include "batwarn.h"
 #include "config.h"
 #include "gamma.h"
 #include "signal.h"
@@ -53,9 +54,6 @@ static int8_t get_charge(const uint8_t flags)
 	return (uint8_t) atoi(buf);
 }
 
-#define BW_BEEN_LOW 1
-#define BW_GAMMA_NORMAL 2
-
 static void handle_low_battery(uint8_t *flags , const uint8_t charge)
 {
 	if(!(*flags&BW_BEEN_LOW)) {
@@ -74,11 +72,10 @@ static void handle_low_battery(uint8_t *flags , const uint8_t charge)
 	}
 }
 
-static void handle_normal_battery(uint8_t *flags, const uint8_t charge)
+static void handle_normal_battery(uint8_t *flags)
 {
 	if(!(*flags&BW_GAMMA_NORMAL)) {
-		batwarn_set_gamma(charge >
-			FULL_PERCENT ? GAMMA_FULL : GAMMA_NORMAL);
+		batwarn_set_gamma(GAMMA_NORMAL);
 		*flags|=BW_GAMMA_NORMAL;
 		*flags&=~BW_BEEN_LOW;
 	}
@@ -92,7 +89,7 @@ check:
 	if(flags & BW_DEBUG)
 		fprintf(stderr, "Charge is %d\n", charge);
 	if(charge > LOW_PERCENT)
-		handle_normal_battery(&flags, charge);
+		handle_normal_battery(&flags);
 	else
 		handle_low_battery(&flags, charge);
 	sleep(flags&BW_BEEN_LOW? 1 : WAIT);
