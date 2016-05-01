@@ -14,6 +14,7 @@ static void restore_gamma(void) // Program exited
 	batwarn_set_gamma(GAMMA_NORMAL);
 }
 
+__attribute__((noreturn))
 static void cb() // Signal received
 {
 	fputs("Signal received...\n", stderr);

@@ -13,12 +13,14 @@
 #include "gamma.h"
 #include "signal.h"
 
+__attribute__((noreturn,nonnull))
 static void die(const char * msg, const char * arg)
 {
 	fprintf(stderr, "%s: %s\n", msg, arg);
 	exit(1);
 }
 
+__attribute__((nonnull))
 static FILE * try_open(const char * restrict fn)
 {
 	FILE * f=fopen(fn,"r");
@@ -43,10 +45,10 @@ static int8_t get_charge(const uint8_t flags)
 	   gamma more quickly.  */
 	if(is_on_ac(flags))
 		return 100;
-	const uint8_t sz=4;
-	char buf[sz];
+	enum { BATSYSFILE_BUF_SZ=4 };
+	char buf[BATSYSFILE_BUF_SZ];
 	FILE *f=try_open(BATSYSFILE);
-	const size_t r=fread(&buf, 1, sz, f);
+	const size_t r=fread(&buf, 1, BATSYSFILE_BUF_SZ, f);
 	if(!r) die("Could not read charge", BATSYSFILE);
 	fclose(f);
 	if(flags & BW_DEBUG)
@@ -54,6 +56,7 @@ static int8_t get_charge(const uint8_t flags)
 	return (uint8_t) atoi(buf);
 }
 
+__attribute__((nonnull))
 static void handle_low_battery(uint8_t *flags , const uint8_t charge)
 {
 	if(!(*flags&BW_BEEN_LOW)) {
@@ -72,6 +75,7 @@ static void handle_low_battery(uint8_t *flags , const uint8_t charge)
 	}
 }
 
+__attribute__((nonnull))
 static void handle_normal_battery(uint8_t *flags)
 {
 	if(!(*flags&BW_GAMMA_NORMAL)) {
