@@ -14,7 +14,7 @@
 #include "signal.h"
 
 __attribute__((noreturn,nonnull))
-static void die(const char * msg, const char * arg)
+static void die(const char * restrict msg, const char * restrict arg)
 {
 	fprintf(stderr, "%s: %s\n", msg, arg);
 	exit(1);
