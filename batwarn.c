@@ -56,6 +56,18 @@ static int8_t get_charge(const uint8_t flags)
 	return (uint8_t) atoi(buf);
 }
 
+static void handle_critical_battery(const bool debug)
+{
+	// Attempt to suspend the system
+	const int r=system(SUSPEND_CMD);
+	if(debug)
+		  fprintf(stderr, "%s RETURNED %d", SUSPEND_CMD, r);
+	if(r) {
+		fprintf(stderr, "Warning:  Could not execute %s.",
+			SUSPEND_CMD);
+	}
+}
+
 __attribute__((nonnull))
 static void handle_low_battery(uint8_t *flags , const uint8_t charge)
 {
@@ -64,15 +76,8 @@ static void handle_low_battery(uint8_t *flags , const uint8_t charge)
 		*flags&=~BW_GAMMA_NORMAL;
 		*flags|=BW_BEEN_LOW;
 	}
-	if(charge < CRIT_PERCENT) {
-		const int r=system(SUSPEND_CMD);
-		if(*flags & BW_DEBUG)
-			fprintf(stderr, "%s RETURNED %d", SUSPEND_CMD, r);
-		if(r) {
-			fprintf(stderr, "Warning:  Could not execute %s.",
-				SUSPEND_CMD);
-		}
-	}
+	if(charge < CRIT_PERCENT)
+		  handle_critical_battery(*flags & BW_DEBUG);
 }
 
 __attribute__((nonnull))
