@@ -2,16 +2,14 @@
 
 #include "batwarn.h"
 
-#include <errno.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sysexits.h>
-#include <unistd.h>
 #include "config.h"
 #include "gamma.h"
 #include "signal.h"
+
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 __attribute__((noreturn,nonnull))
 static void die(const char * restrict msg, const char * restrict arg)
