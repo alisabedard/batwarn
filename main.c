@@ -1,14 +1,11 @@
-// batwarn - (C) 2015-2016 Jeffrey E. Bedard
-
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+// batwarn - (C) 2015-2016 Jeffrey E. Bedard #include <stdbool.h>
 #include "batwarn.h"
 #include "config.h"
 #include "gamma.h"
-#include "signal.h"
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 static const char * restrict helptext =
 "USAGE:  batwarn [-d][-h]\n"
@@ -18,6 +15,12 @@ static const char * restrict helptext =
 "\t-h    show this usage information\n"
 "Copyright 2016, Jeffrey E. Bedard\n"
 "Project page:  https://github.com/jefbed/batwarn\n";
+
+static void exit_cb(void)
+{
+	fputs("Restoring gamma...\n", stderr);
+	batwarn_set_gamma(GAMMA_NORMAL);
+}
 
 int main(int argc, char **argv)
 {
@@ -37,7 +40,8 @@ int main(int argc, char **argv)
 
 	if(!(flags & BW_DEBUG) && (fork() != 0))
 		return 0;
-	setup_signal_handler();
+	signal(SIGINT, exit);
+	atexit(exit_cb);
 	batwarn_start_checking(flags);
 	return 0;
 }

@@ -4,7 +4,6 @@
 
 #include "config.h"
 #include "gamma.h"
-#include "signal.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -59,7 +58,7 @@ static void handle_critical_battery(const bool debug)
 	// Attempt to suspend the system
 	const int r=system(SUSPEND_CMD);
 	if(debug)
-		  fprintf(stderr, "%s RETURNED %d", SUSPEND_CMD, r);
+		fprintf(stderr, "%s RETURNED %d", SUSPEND_CMD, r);
 	if(r) {
 		fprintf(stderr, "Warning:  Could not execute %s.",
 			SUSPEND_CMD);
