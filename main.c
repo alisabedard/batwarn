@@ -24,20 +24,14 @@ static void exit_cb(void)
 
 int main(int argc, char **argv)
 {
-	static uint8_t flags;
-	int opt;
-	while((opt=getopt(argc, argv, "dh")) != -1) {
-		switch(opt) {
-		case 'd':
+	uint8_t flags;
+	while (--argc && argv[argc][0] == '-')
+		if (argv[argc][1] == 'd')
 			flags |= BW_DEBUG;
-			break;
-		case 'h':
-		default:
+		else {
 			fputs(helptext, stderr);
 			return 1;
 		}
-	}
-
 	if(!(flags & BW_DEBUG) && (fork() != 0))
 		return 0;
 	signal(SIGINT, exit);

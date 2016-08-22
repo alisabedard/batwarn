@@ -2,7 +2,7 @@
 
 # Install location:
 PREFIX=/usr
-CFLAGS+=-Wall -W
+CFLAGS+=-Wall -Wextra
 #CFLAGS+=-ggdb
 #CFLAGS+=-DDEBUG
 
