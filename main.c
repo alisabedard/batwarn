@@ -2,12 +2,13 @@
 #include "batwarn.h"
 #include "config.h"
 #include "gamma.h"
+
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-static const char * restrict helptext =
+static const char helptext[] =
 "USAGE:  batwarn [-d][-h]\n"
 "DESCRIPTION:  batwarn is a simple utility to change X11 gamma to reflect\n"
 "       battery status, such that the user may promptly restore AC power.\n"
@@ -18,7 +19,6 @@ static const char * restrict helptext =
 
 static void exit_cb(void)
 {
-	fputs("Restoring gamma...\n", stderr);
 	batwarn_set_gamma(GAMMA_NORMAL);
 }
 
