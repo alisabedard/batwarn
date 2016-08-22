@@ -4,7 +4,6 @@
 #include "gamma.h"
 
 #include <signal.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -29,7 +28,7 @@ int main(int argc, char **argv)
 		if (argv[argc][1] == 'd')
 			flags |= BW_DEBUG;
 		else {
-			fputs(helptext, stderr);
+			write(2, helptext, sizeof(helptext));
 			return 1;
 		}
 	if(!(flags & BW_DEBUG) && (fork() != 0))
