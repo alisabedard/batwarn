@@ -1,4 +1,4 @@
-// batwarn - (C) 2015-2016 Jeffrey E. Bedard #include <stdbool.h>
+// batwarn - (C) 2015-2016 Jeffrey E. Bedard
 #include "batwarn.h"
 #include "config.h"
 #include "gamma.h"
