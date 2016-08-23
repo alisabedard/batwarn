@@ -23,7 +23,7 @@ static void exit_cb(void)
 
 int main(int argc, char **argv)
 {
-	uint8_t flags;
+	uint8_t flags = 0;
 	while (--argc && argv[argc][0] == '-')
 		if (argv[argc][1] == 'd')
 			flags |= BW_DEBUG;
