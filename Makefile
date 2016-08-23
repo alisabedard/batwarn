@@ -2,16 +2,18 @@
 
 # Install location:
 PREFIX=/usr
+
 CFLAGS+=-Wall -Wextra
-#CFLAGS+=-ggdb
-#CFLAGS+=-DDEBUG
 
 LIBS=-lX11 -lXxf86vm
 PROG=batwarn
+
 all: ${PROG}
+
 OBJS=$(patsubst %.c,%.o,$(wildcard *.c))
 CFLAGS+=-std=c11
 CFLAGS+=-D_XOPEN_SOURCE=700
+
 ${PROG}: ${OBJS}
 	cc -o ${PROG} ${OBJS} ${LIBS}
 clean:

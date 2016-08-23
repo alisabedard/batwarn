@@ -7,15 +7,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static const char helptext[] =
-"USAGE:  batwarn [-d][-h]\n"
-"DESCRIPTION:  batwarn is a simple utility to change X11 gamma to reflect\n"
-"       battery status, such that the user may promptly restore AC power.\n"
-"\t-d    enable runtime debug options, do not fork\n"
-"\t-h    show this usage information\n"
-"Copyright 2016, Jeffrey E. Bedard\n"
-"Project page:  https://github.com/jefbed/batwarn\n";
-
 static void exit_cb(void)
 {
 	batwarn_set_gamma(GAMMA_NORMAL);
@@ -28,7 +19,8 @@ int main(int argc, char **argv)
 		if (argv[argc][1] == 'd')
 			flags |= BW_DEBUG;
 		else {
-			write(2, helptext, sizeof(helptext));
+			const char h[] = "usage: batwarn [-d]\n";
+			write(2, h, sizeof(h));
 			return 1;
 		}
 	if(!(flags & BW_DEBUG) && (fork() != 0))
