@@ -55,25 +55,27 @@ static int8_t get_charge(void)
 }
 
 __attribute__((nonnull))
-static void handle_low_battery(uint8_t *flags , const uint8_t charge)
+static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 {
-	if(!(*flags&BW_BEEN_LOW)) {
+	if (!(flags & BW_BEEN_LOW)) {
 		batwarn_set_gamma(GAMMA_WARNING);
-		*flags&=~BW_GAMMA_NORMAL;
-		*flags|=BW_BEEN_LOW;
+		flags &= ~BW_GAMMA_NORMAL;
+		flags |= BW_BEEN_LOW;
 	}
-	if(charge < CRIT_PERCENT && system(SUSPEND_CMD))
+	if (charge < CRIT_PERCENT && system(SUSPEND_CMD))
 		die("Could not execute command:  ", SUSPEND_CMD);
+	return flags;
 }
 
 __attribute__((nonnull))
-static void handle_normal_battery(uint8_t *flags)
+static uint8_t handle_normal_battery(uint8_t flags)
 {
-	if(!(*flags&BW_GAMMA_NORMAL)) {
+	if (!(flags & BW_GAMMA_NORMAL)) {
 		batwarn_set_gamma(GAMMA_NORMAL);
-		*flags|=BW_GAMMA_NORMAL;
-		*flags&=~BW_BEEN_LOW;
+		flags |= BW_GAMMA_NORMAL;
+		flags &= ~BW_BEEN_LOW;
 	}
+	return flags;
 }
 
 void batwarn_start_checking(uint8_t flags)
@@ -81,13 +83,9 @@ void batwarn_start_checking(uint8_t flags)
 	uint8_t charge;
 check:
 	charge = get_charge();
-	if(flags & BW_DEBUG)
-		fprintf(stderr, "Charge is %d\n", charge);
-	if(charge > LOW_PERCENT)
-		handle_normal_battery(&flags);
-	else
-		handle_low_battery(&flags, charge);
-	sleep(flags&BW_BEEN_LOW? 1 : WAIT);
+	flags = charge > LOW_PERCENT ? handle_normal_battery(flags)
+		: handle_low_battery(flags, charge);
+	sleep(flags & BW_BEEN_LOW? 1 : WAIT);
 	goto check;
 }
 
