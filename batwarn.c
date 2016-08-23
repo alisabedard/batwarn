@@ -39,7 +39,7 @@ static int get_fd(const char * fn)
 static int get_value(const char * fn)
 {
 	int fd = get_fd(fn);
-enum {READ_SZ = 4};
+	enum {READ_SZ = 4};
 	char buf[READ_SZ];
 	if (read(fd, buf, READ_SZ) == -1)
 		die("Cannot read ", fn);
@@ -47,20 +47,11 @@ enum {READ_SZ = 4};
 	return atoi(buf);
 }
 
-static int8_t get_charge(const uint8_t flags)
+static int8_t get_charge(void)
 {
 	/* Indicate good battery status when AC power is restored to restore
 	   gamma more quickly.  */
-	if(get_value(ACSYSFILE))
-		return 100;
-	enum { BATSYSFILE_BUF_SZ=4 };
-	char buf[BATSYSFILE_BUF_SZ];
-	int fd = open(BATSYSFILE, O_RDONLY);
-	read(fd, buf, BATSYSFILE_BUF_SZ);
-	close(fd);
-	if(flags & BW_DEBUG)
-		fprintf(stderr, "Buffer for BATSYSFILE: %s\n", buf);
-	return (uint8_t) atoi(buf);
+	return get_value(ACSYSFILE) ? 100 : get_value(BATSYSFILE);
 }
 
 static void handle_critical_battery(const bool debug)
@@ -101,7 +92,7 @@ void batwarn_start_checking(uint8_t flags)
 {
 	uint8_t charge;
 check:
-	charge = get_charge(flags);
+	charge = get_charge();
 	if(flags & BW_DEBUG)
 		fprintf(stderr, "Charge is %d\n", charge);
 	if(charge > LOW_PERCENT)
