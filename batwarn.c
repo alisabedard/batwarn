@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-__attribute__((noreturn,nonnull(1)))
+__attribute__((noreturn,nonnull(1),pure))
 static void die(const char * restrict msg, const char * restrict arg)
 {
 	uint_fast16_t l = 0;
@@ -50,7 +50,6 @@ static int8_t get_charge(void)
 	return get_value(ACSYSFILE) ? 100 : get_value(BATSYSFILE);
 }
 
-__attribute__((nonnull))
 static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 {
 	if (!(flags & BW_BEEN_LOW)) {
@@ -63,7 +62,6 @@ static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 	return flags;
 }
 
-__attribute__((nonnull))
 static uint8_t handle_normal_battery(uint8_t flags)
 {
 	if (!(flags & BW_GAMMA_NORMAL)) {
@@ -78,8 +76,8 @@ void batwarn_start_checking(uint8_t flags)
 {
 	uint8_t charge;
 check:
-	charge = get_charge();
-	flags = charge > LOW_PERCENT ? handle_normal_battery(flags)
+	flags = (charge = get_charge()) > LOW_PERCENT
+		? handle_normal_battery(flags)
 		: handle_low_battery(flags, charge);
 	sleep(flags & BW_BEEN_LOW? 1 : WAIT);
 	goto check;
