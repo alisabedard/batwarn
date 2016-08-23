@@ -5,12 +5,8 @@
 #include "config.h"
 #include "gamma.h"
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 __attribute__((noreturn,nonnull(1)))
