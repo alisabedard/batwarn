@@ -8,46 +8,56 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
 
-__attribute__((noreturn,nonnull))
+__attribute__((noreturn,nonnull(1)))
 static void die(const char * restrict msg, const char * restrict arg)
 {
-	fprintf(stderr, "%s: %s\n", msg, arg);
+	uint_fast16_t l = 0;
+	while(msg[++l]);
+	write(2, msg, l);
+	if (arg) {
+		l = 0;
+		while(arg[++l]);
+		write(2, arg, l);
+	}
+	write(2, "\n", 1);
 	exit(1);
 }
 
-__attribute__((nonnull))
-static FILE * try_open(const char * restrict fn)
+static int get_fd(const char * fn)
 {
-	FILE * f=fopen(fn,"r");
-	if(!f) die("Cannot open file", fn);
-	return f;
+	const int fd = open(fn, O_RDONLY);
+	if (fd > -1)
+		return fd;
+	die("Cannot open ", fn);
 }
 
-static bool is_on_ac(const uint8_t flags)
+static int get_value(const char * fn)
 {
-	char buf;
-	FILE *f=try_open(ACSYSFILE);
-	const size_t r=fread(&buf, 1, 1, f);
-	fclose(f);
-	if(flags & BW_DEBUG)
-		fprintf(stderr, "Buffer for ACSYSFILE: %d\n", buf-'0');
-	return r?buf-'0':true;
+	int fd = get_fd(fn);
+enum {READ_SZ = 4};
+	char buf[READ_SZ];
+	if (read(fd, buf, READ_SZ) == -1)
+		die("Cannot read ", fn);
+	close(fd);
+	return atoi(buf);
 }
 
 static int8_t get_charge(const uint8_t flags)
 {
 	/* Indicate good battery status when AC power is restored to restore
 	   gamma more quickly.  */
-	if(is_on_ac(flags))
+	if(get_value(ACSYSFILE))
 		return 100;
 	enum { BATSYSFILE_BUF_SZ=4 };
 	char buf[BATSYSFILE_BUF_SZ];
-	FILE *f=try_open(BATSYSFILE);
-	const size_t r=fread(&buf, 1, BATSYSFILE_BUF_SZ, f);
-	if(!r) die("Could not read charge", BATSYSFILE);
-	fclose(f);
+	int fd = open(BATSYSFILE, O_RDONLY);
+	read(fd, buf, BATSYSFILE_BUF_SZ);
+	close(fd);
 	if(flags & BW_DEBUG)
 		fprintf(stderr, "Buffer for BATSYSFILE: %s\n", buf);
 	return (uint8_t) atoi(buf);
