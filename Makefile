@@ -5,12 +5,21 @@ PREFIX=/usr
 
 CFLAGS+=-Wall -Wextra
 
-LIBS=-lX11 -lXxf86vm
+# Porting:
+CFLAGS+=-I/usr/local/include
+CFLAGS+=-I/usr/pkg/include
+CFLAGS+=-I/usr/X11R7/include
+CFLAGS+=-I/usr/X11R6/include
+LIBS+=-L/usr/local/lib
+LIBS+=-L/usr/pkg/lib
+LIBS+=-L/usr/X11R7/lib
+LIBS+=-L/usr/X11R6/lib
+LIBS+=-lX11 -lXxf86vm
 PROG=batwarn
 
 all: ${PROG}
 
-OBJS=$(patsubst %.c,%.o,$(wildcard *.c))
+OBJS=batwarn.o gamma.o main.o
 CFLAGS+=-std=c11
 CFLAGS+=-D_XOPEN_SOURCE=700
 
