@@ -24,7 +24,7 @@ CFLAGS+=-std=c11
 CFLAGS+=-D_XOPEN_SOURCE=700
 
 ${PROG}: ${OBJS}
-	cc -o ${PROG} ${OBJS} ${LIBS}
+	${CC} -o ${PROG} ${OBJS} ${LIBS}
 clean:
 	rm -f ${PROG} ${OBJS}
 install:
