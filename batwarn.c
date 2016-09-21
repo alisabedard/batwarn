@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "gamma.h"
+#include "log.h"
 
 #include <fcntl.h>
 #include <stdlib.h>
@@ -88,21 +89,18 @@ static uint8_t handle_normal_battery(uint8_t flags)
 	}
 	return flags;
 }
-#ifdef DEBUG
-#include <stdio.h>
-#endif//DEBUG
+
 void batwarn_start_checking(uint8_t flags)
 {
 	uint8_t charge;
 	if (!low_percent)
 		low_percent = LOW_PERCENT;
-#ifdef DEBUG
-	printf("low_percent: %d\n", low_percent);
-#endif//DEBUG
+	LOG("low_percent: %d\n", low_percent);
 check:
 	flags = (charge = get_charge()) > low_percent
 		? handle_normal_battery(flags)
 		: handle_low_battery(flags, charge);
+	LOG("charge: %d\n", charge);
 	sleep(flags & BW_BEEN_LOW? 1 : WAIT);
 	goto check;
 }

@@ -22,9 +22,14 @@ all: ${PROG}
 OBJS=batwarn.o gamma.o main.o
 CFLAGS+=-std=c11
 CFLAGS+=-D_XOPEN_SOURCE=700
+CFLAGS+=${debug_flags}
 
 ${PROG}: ${OBJS}
 	${CC} -o ${PROG} ${OBJS} ${LIBS}
+
+debug: clean
+	make debug_flags='-DDEBUG'
+
 clean:
 	rm -f ${PROG} ${OBJS}
 install:
