@@ -88,7 +88,9 @@ static uint8_t handle_normal_battery(uint8_t flags)
 	}
 	return flags;
 }
+#ifdef DEBUG
 #include <stdio.h>
+#endif//DEBUG
 void batwarn_start_checking(uint8_t flags)
 {
 	uint8_t charge;
