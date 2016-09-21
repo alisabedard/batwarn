@@ -24,5 +24,6 @@ enum { WAIT = 1 };
 #define ACSYSFILE "/sys/class/power_supply/AC/online"
 
 #define SUSPEND_CMD "systemctl suspend"
+#define HIBERNATE_CMD "systemctl hibernate"
 
 #endif//!BW_CONFIG_H

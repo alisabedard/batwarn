@@ -8,9 +8,13 @@
 enum {
 	BW_BEEN_LOW = 1,
 	BW_GAMMA_NORMAL = 2,
-	BW_DEBUG = 4
+	BW_DEBUG = 4,
+	BW_HIBERNATE = 8,
+	BW_SUSPEND = 16
 };
 
 void batwarn_start_checking(uint8_t flags);
+
+void batwarn_set_percent(const uint8_t pct);
 
 #endif//!BATWARN_H

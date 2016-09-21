@@ -9,6 +9,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+static uint8_t low_percent;
+
+void batwarn_set_percent(const uint8_t pct)
+{
+	low_percent = pct;
+}
+
 __attribute__((noreturn,nonnull(1),pure))
 static void die(const char * restrict msg, const char * restrict arg)
 {
@@ -57,6 +64,16 @@ static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 		flags &= ~BW_GAMMA_NORMAL;
 		flags |= BW_BEEN_LOW;
 	}
+	if (charge < CRIT_PERCENT) {
+		static const char nex[] = "Could not execute command:  ";
+		if (flags & BW_HIBERNATE) {
+			if (system(HIBERNATE_CMD))
+				die(nex, HIBERNATE_CMD);
+		} else if (flags & BW_SUSPEND) {
+			if (system(HIBERNATE_CMD))
+				die(nex, SUSPEND_CMD);
+		}
+	}
 	if (charge < CRIT_PERCENT && system(SUSPEND_CMD))
 		die("Could not execute command:  ", SUSPEND_CMD);
 	return flags;
@@ -71,12 +88,17 @@ static uint8_t handle_normal_battery(uint8_t flags)
 	}
 	return flags;
 }
-
+#include <stdio.h>
 void batwarn_start_checking(uint8_t flags)
 {
 	uint8_t charge;
+	if (!low_percent)
+		low_percent = LOW_PERCENT;
+#ifdef DEBUG
+	printf("low_percent: %d\n", low_percent);
+#endif//DEBUG
 check:
-	flags = (charge = get_charge()) > LOW_PERCENT
+	flags = (charge = get_charge()) > low_percent
 		? handle_normal_battery(flags)
 		: handle_low_battery(flags, charge);
 	sleep(flags & BW_BEEN_LOW? 1 : WAIT);
