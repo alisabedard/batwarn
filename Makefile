@@ -4,18 +4,19 @@
 PREFIX=/usr
 
 CFLAGS+=-Wall -Wextra
-
-LIBS=-lX11 -lXxf86vm
+CFLAGS+=-I/usr/X11R6/include
+LDFLAGS+=-L/usr/X11R6/lib
+LDFLAGS+=-lX11 -lXxf86vm
 PROG=batwarn
 
 all: ${PROG}
 
-OBJS=$(patsubst %.c,%.o,$(wildcard *.c))
-CFLAGS+=-std=c11
+OBJS=batwarn.o gamma.o main.o
+CFLAGS+=-std=c99
 CFLAGS+=-D_XOPEN_SOURCE=700
 
 ${PROG}: ${OBJS}
-	cc -o ${PROG} ${OBJS} ${LIBS}
+	cc -o ${PROG} ${OBJS} ${LDFLAGS}
 clean:
 	rm -f ${PROG} ${OBJS}
 install:

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-__attribute__((noreturn,nonnull(1),pure))
+__attribute__((pure,noreturn))
 static void die(const char * restrict msg, const char * restrict arg)
 {
 	uint_fast16_t l = 0;
