@@ -1,0 +1,13 @@
+// Copyright 2016, Jeffrey E. Bedard
+#ifndef BATWARN_LOG_H
+#define BATWARN_LOG_H
+#ifdef LOG
+#undef LOG
+#endif//LOG
+#ifdef DEBUG
+#include <stdio.h>
+#define LOG(...) dprintf(STDERR_FILENO, __VA_ARGS__)
+#else//!DEBUG
+#define LOG(...)
+#endif//DEBUG
+#endif//!BATWARN_LOG_H

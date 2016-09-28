@@ -4,12 +4,19 @@
 
 #include "config.h"
 #include "gamma.h"
+#include "log.h"
 
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-__attribute__((pure,noreturn))
+static uint8_t low_percent;
+
+void batwarn_set_percent(const uint8_t pct)
+{
+	low_percent = pct;
+}
+
 static void die(const char * restrict msg, const char * restrict arg)
 {
 	uint_fast16_t l = 0;
@@ -27,9 +34,9 @@ static void die(const char * restrict msg, const char * restrict arg)
 static int get_fd(const char * fn)
 {
 	const int fd = open(fn, O_RDONLY);
-	if (fd > -1)
-		return fd;
-	die("Cannot open ", fn);
+	if (fd < 0)
+		die("Cannot open ", fn);
+	return fd;
 }
 
 static int get_value(const char * fn)
@@ -57,6 +64,16 @@ static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 		flags &= ~BW_GAMMA_NORMAL;
 		flags |= BW_BEEN_LOW;
 	}
+	if (charge < CRIT_PERCENT) {
+		static const char nex[] = "Could not execute command:  ";
+		if (flags & BW_HIBERNATE) {
+			if (system(HIBERNATE_CMD))
+				die(nex, HIBERNATE_CMD);
+		} else if (flags & BW_SUSPEND) {
+			if (system(HIBERNATE_CMD))
+				die(nex, SUSPEND_CMD);
+		}
+	}
 	if (charge < CRIT_PERCENT && system(SUSPEND_CMD))
 		die("Could not execute command:  ", SUSPEND_CMD);
 	return flags;
@@ -75,10 +92,14 @@ static uint8_t handle_normal_battery(uint8_t flags)
 void batwarn_start_checking(uint8_t flags)
 {
 	uint8_t charge;
+	if (!low_percent)
+		low_percent = LOW_PERCENT;
+	LOG("low_percent: %d\n", low_percent);
 check:
-	flags = (charge = get_charge()) > LOW_PERCENT
+	flags = (charge = get_charge()) > low_percent
 		? handle_normal_battery(flags)
 		: handle_low_battery(flags, charge);
+	LOG("charge: %d\n", charge);
 	sleep(flags & BW_BEEN_LOW? 1 : WAIT);
 	goto check;
 }
