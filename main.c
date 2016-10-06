@@ -23,7 +23,6 @@ int main(int argc, char **argv)
 		case 'd': // debug
 			flags |= BW_DEBUG;
 			break;
-			exit(0);
 		case 'H': // enable hibernate at critical
 			flags |= BW_HIBERNATE;
 			break;
