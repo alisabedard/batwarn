@@ -1,7 +1,7 @@
 // batwarn - (C) 2015-2016 Jeffrey E. Bedard
 
-#ifndef BW_CONFIG_H
-#define	BW_CONFIG_H
+#ifndef BATWARN_CONFIG_H
+#define	BATWARN_CONFIG_H
 
 #define GAMMA_NORMAL    1.0
 #define GAMMA_WARNING   5.0
@@ -26,4 +26,4 @@ enum { WAIT = 1 };
 #define SUSPEND_CMD "systemctl suspend"
 #define HIBERNATE_CMD "systemctl hibernate"
 
-#endif//!BW_CONFIG_H
+#endif//!BATWARN_CONFIG_H

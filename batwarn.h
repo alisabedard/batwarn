@@ -1,7 +1,7 @@
 // batwarn - (C) 2015-2016 Jeffrey E. Bedard
 
-#ifndef BATWARN_H
-#define	BATWARN_H
+#ifndef BATWARN_BATWARN_H
+#define	BATWARN_BATWARN_H
 
 #include <stdint.h>
 
@@ -17,4 +17,4 @@ void batwarn_start_checking(uint8_t flags);
 
 void batwarn_set_percent(const uint8_t pct);
 
-#endif//!BATWARN_H
+#endif//!BATWARN_BATWARN_H
