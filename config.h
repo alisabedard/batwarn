@@ -20,10 +20,10 @@ enum { WAIT = 1 };
 #endif//!DEBUG
 
 // System files to check:
-#define BATSYSFILE "/sys/class/power_supply/BAT0/capacity"
-#define ACSYSFILE "/sys/class/power_supply/AC/online"
+#define BATWARN_SYS_BATTERY_FILE "/sys/class/power_supply/BAT0/capacity"
+#define BATWARN_SYS_AC_FILE "/sys/class/power_supply/AC/online"
 
-#define SUSPEND_CMD "systemctl suspend"
-#define HIBERNATE_CMD "systemctl hibernate"
+#define BATWARN_SUSPEND_COMMAND "systemctl suspend"
+#define BATWARN_HIBERNATE_COMMAND "systemctl hibernate"
 
 #endif//!BATWARN_CONFIG_H
