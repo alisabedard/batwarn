@@ -9,25 +9,23 @@ static void exit_cb(void)
 {
 	batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
 }
-int main(int argc, char **argv)
+static int8_t parse_argv(int argc, char ** argv, uint8_t * restrict flags)
 {
-	uint8_t flags = 0;
+	int8_t opt, ec = 1;
 	static const char optstr[] = "dhHp:s";
-	int8_t opt;
-	int8_t ec = 1;
 	while ((opt = getopt(argc, argv, optstr)) != -1) {
 		switch (opt) {
 		case 'd': // debug
-			flags |= BW_DEBUG;
+			*flags |= BW_DEBUG;
 			break;
 		case 'H': // enable hibernate at critical
-			flags |= BW_HIBERNATE;
+			*flags |= BW_HIBERNATE;
 			break;
 		case 'p': // warning percentage
 			batwarn_set_percent(atoi(optarg));
 			break;
 		case 's': // enable suspend
-			flags |= BW_SUSPEND;
+			*flags |= BW_SUSPEND;
 			break;
 		case 'h': // help
 			ec = 0; // fall through
@@ -42,6 +40,12 @@ int main(int argc, char **argv)
 		}
 		}
 	}
+	return ec;
+}
+int main(int argc, char **argv)
+{
+	uint8_t flags = 0;
+	int8_t ec = parse_argv(argc, argv, &flags);
 	if(!(flags & BW_DEBUG) && (fork() != 0))
 		return 0;
 	signal(SIGINT, exit);
