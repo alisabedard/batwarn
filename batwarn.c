@@ -60,11 +60,11 @@ static int8_t get_charge(void)
 static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 {
 	if (!(flags & BW_BEEN_LOW)) {
-		batwarn_set_gamma(GAMMA_WARNING);
-		flags &= ~BW_GAMMA_NORMAL;
+		batwarn_set_gamma(BATWARN_GAMMA_WARNING);
+		flags &= ~BW_BATWARN_GAMMA_NORMAL;
 		flags |= BW_BEEN_LOW;
 	}
-	if (charge < CRIT_PERCENT) {
+	if (charge < BATWARN_PERCENT_CRITICAL) {
 		static const char nex[] = "Could not execute command:  ";
 		if (flags & BW_HIBERNATE) {
 			if (system(BATWARN_HIBERNATE_COMMAND))
@@ -74,16 +74,16 @@ static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 				die(nex, BATWARN_SUSPEND_COMMAND);
 		}
 	}
-	if (charge < CRIT_PERCENT && system(BATWARN_SUSPEND_COMMAND))
+	if (charge < BATWARN_PERCENT_CRITICAL && system(BATWARN_SUSPEND_COMMAND))
 		die("Could not execute command:  ", BATWARN_SUSPEND_COMMAND);
 	return flags;
 }
 
 static uint8_t handle_normal_battery(uint8_t flags)
 {
-	if (!(flags & BW_GAMMA_NORMAL)) {
-		batwarn_set_gamma(GAMMA_NORMAL);
-		flags |= BW_GAMMA_NORMAL;
+	if (!(flags & BW_BATWARN_GAMMA_NORMAL)) {
+		batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
+		flags |= BW_BATWARN_GAMMA_NORMAL;
 		flags &= ~BW_BEEN_LOW;
 	}
 	return flags;
@@ -93,7 +93,7 @@ void batwarn_start_checking(uint8_t flags)
 {
 	uint8_t charge;
 	if (!low_percent)
-		low_percent = LOW_PERCENT;
+		low_percent = BATWARN_PERCENT_LOW;
 	LOG("low_percent: %d\n", low_percent);
 check:
 	flags = (charge = get_charge()) > low_percent

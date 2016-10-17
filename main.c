@@ -9,7 +9,7 @@
 
 static void exit_cb(void)
 {
-	batwarn_set_gamma(GAMMA_NORMAL);
+	batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
 }
 
 int main(int argc, char **argv)
