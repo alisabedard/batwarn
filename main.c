@@ -9,47 +9,52 @@ static void exit_cb(void)
 {
 	batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
 }
-static int8_t parse_argv(int argc, char ** argv, uint8_t * restrict flags)
+__attribute__((noreturn))
+static void usage(char * arg0, const char * optstr,
+	size_t sz, const int8_t ec)
 {
-	int8_t opt, ec = 1;
+	{
+		uint8_t l = 0;
+		while (arg0[++l]);
+		write(1, arg0, l);
+	}
+	write(1, " -", 2);
+	write(1, optstr, sz);
+	write(1, "\n", 1);
+	exit(ec);
+}
+static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)
+{
+	int8_t opt;
 	static const char optstr[] = "dhHp:s";
-	while ((opt = getopt(argc, argv, optstr)) != -1) {
+	while((opt = getopt(argc, argv, optstr)) != -1)
 		switch (opt) {
 		case 'd': // debug
-			*flags |= BW_DEBUG;
+			flags |= BW_DEBUG;
 			break;
 		case 'H': // enable hibernate at critical
-			*flags |= BW_HIBERNATE;
+			flags |= BW_HIBERNATE;
 			break;
 		case 'p': // warning percentage
 			batwarn_set_percent(atoi(optarg));
 			break;
 		case 's': // enable suspend
-			*flags |= BW_SUSPEND;
+			flags |= BW_SUSPEND;
 			break;
 		case 'h': // help
-			ec = 0; // fall through
-		default: { // usage
-			uint8_t l = 0;
-			while (argv[0][++l]);
-			write(1, *argv, l);
-			write(1, " -", 2);
-			write(1, optstr, sizeof(optstr));
-			write(1, "\n", 1);
-			return ec;
+			usage(*argv, optstr, sizeof(optstr), 0);
+		default: // usage
+			usage(*argv, optstr, sizeof(optstr), 1);
 		}
-		}
-	}
-	return ec;
+	return flags;
 }
 int main(int argc, char **argv)
 {
-	uint8_t flags = 0;
-	int8_t ec = parse_argv(argc, argv, &flags);
+	const uint8_t flags = parse_argv(argc, argv, 0);
 	if(!(flags & BW_DEBUG) && (fork() != 0))
 		return 0;
 	signal(SIGINT, exit);
 	atexit(exit_cb);
 	batwarn_start_checking(flags);
-	return ec;
+	return 0;
 }
