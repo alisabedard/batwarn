@@ -88,6 +88,6 @@ check:
 		? handle_normal_battery(flags)
 		: handle_low_battery(flags, charge);
 	LOG("charge: %d\n", charge);
-	sleep((flags & BW_BEEN_LOW) ? 1 : WAIT);
+	sleep((flags & BW_BEEN_LOW) ? 1 : BATWARN_WAIT_SECONDS);
 	goto check;
 }
