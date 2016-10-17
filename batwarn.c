@@ -1,22 +1,16 @@
 // batwarn - (C) 2015-2016 Jeffrey E. Bedard
-
 #include "batwarn.h"
-
 #include "config.h"
 #include "gamma.h"
 #include "log.h"
-
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 static uint8_t low_percent;
-
 void batwarn_set_percent(const uint8_t pct)
 {
 	low_percent = pct;
 }
-
 static void die(const char * restrict msg, const char * restrict arg)
 {
 	uint_fast16_t l = 0;
@@ -30,7 +24,6 @@ static void die(const char * restrict msg, const char * restrict arg)
 	write(2, "\n", 1);
 	exit(1);
 }
-
 static int get_fd(const char * fn)
 {
 	const int fd = open(fn, O_RDONLY);
@@ -38,7 +31,6 @@ static int get_fd(const char * fn)
 		die("Cannot open ", fn);
 	return fd;
 }
-
 static int get_value(const char * fn)
 {
 	int fd = get_fd(fn);
@@ -49,14 +41,12 @@ static int get_value(const char * fn)
 	close(fd);
 	return atoi(buf);
 }
-
 static int8_t get_charge(void)
 {
 	/* Indicate good battery status when AC power is restored to restore
 	   gamma more quickly.  */
 	return get_value(BATWARN_SYS_AC_FILE) ? 100 : get_value(BATWARN_SYS_BATTERY_FILE);
 }
-
 static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 {
 	if (!(flags & BW_BEEN_LOW)) {
@@ -78,7 +68,6 @@ static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 		die("Could not execute command:  ", BATWARN_SUSPEND_COMMAND);
 	return flags;
 }
-
 static uint8_t handle_normal_battery(uint8_t flags)
 {
 	if (!(flags & BW_BATWARN_GAMMA_NORMAL)) {
@@ -88,7 +77,6 @@ static uint8_t handle_normal_battery(uint8_t flags)
 	}
 	return flags;
 }
-
 void batwarn_start_checking(uint8_t flags)
 {
 	uint8_t charge;
@@ -103,4 +91,3 @@ check:
 	sleep((flags & BW_BEEN_LOW) ? 1 : WAIT);
 	goto check;
 }
-

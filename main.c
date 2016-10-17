@@ -2,16 +2,13 @@
 #include "batwarn.h"
 #include "config.h"
 #include "gamma.h"
-
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 static void exit_cb(void)
 {
 	batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
 }
-
 int main(int argc, char **argv)
 {
 	uint8_t flags = 0;
@@ -52,4 +49,3 @@ int main(int argc, char **argv)
 	batwarn_start_checking(flags);
 	return ec;
 }
-
