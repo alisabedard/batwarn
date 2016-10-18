@@ -35,7 +35,7 @@ static void usage(char * arg0, const char * optstr,
 static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)
 {
 	int8_t opt;
-	static const char optstr[] = "dhHp:s";
+	const char optstr[] = "dhHp:s";
 	while((opt = getopt(argc, argv, optstr)) != -1)
 		switch (opt) {
 		case 'd': // debug
