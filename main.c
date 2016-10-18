@@ -21,6 +21,15 @@ static void usage(char * arg0, const char * optstr,
 	write(1, " -", 2);
 	write(1, optstr, sz);
 	write(1, "\n", 1);
+	const char helptext[] =
+		"-d\t\tDo not fork a daemon; run in the foreground.\n"
+		"-h\t\tShow this usage information.\n"
+		"-H\t\tEnable hibernation at critical battery level.\n"
+		"-p PERCENT\tSet the warning percent for gamma change.\n"
+		"-s\t\tEnable suspend at critical battery level.\n"
+		"Version " BATWARN_VERSION_STRING "\n"
+		"Copyright 2016, Jeffrey E. Bedard <jefbed@gmail.com>\n";
+	write(1, helptext, sizeof(helptext));
 	exit(ec);
 }
 static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)

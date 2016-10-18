@@ -19,4 +19,5 @@ enum { BATWARN_WAIT_SECONDS = 1 };
 #define BATWARN_SYS_AC_FILE "/sys/class/power_supply/AC/online"
 #define BATWARN_SUSPEND_COMMAND "systemctl suspend"
 #define BATWARN_HIBERNATE_COMMAND "systemctl hibernate"
+#define BATWARN_VERSION_STRING "1.0.5"
 #endif//!BATWARN_CONFIG_H
