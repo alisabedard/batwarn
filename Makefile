@@ -35,4 +35,5 @@ clean:
 install:
 	install -d ${DESTDIR}${PREFIX}/bin
 	install -s ${PROG} ${DESTDIR}${PREFIX}/bin/
+	install -s gam ${DESTDIR}${PREFIX}/bin/
 #EOF
