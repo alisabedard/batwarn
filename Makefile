@@ -23,12 +23,15 @@ OBJS=batwarn.o gamma.o main.o
 CFLAGS+=-std=c99
 CFLAGS+=-D_XOPEN_SOURCE=700
 CFLAGS+=${debug_flags}
-${PROG}: ${OBJS}
+${PROG}: ${OBJS} gam
 	${CC} -o ${PROG} ${OBJS} ${LDFLAGS}
+gamobj=gam.o gamma.o
+gam: ${gamobj}
+	${CC} -o gam ${gamobj} ${LDFLAGS}
 debug: clean
 	make debug_flags='-DDEBUG'
 clean:
-	rm -f ${PROG} ${OBJS}
+	rm -f ${PROG} ${OBJS} gam gam.o
 install:
 	install -d ${DESTDIR}${PREFIX}/bin
 	install -s ${PROG} ${DESTDIR}${PREFIX}/bin/
