@@ -94,9 +94,9 @@ void batwarn_start_checking(uint8_t flags)
 	// Delay for checking system files:
 	enum {
 #ifdef DEBUG
-		BATWARN_WAIT_SECONDS = 60
-#else//!DEBUG
 		BATWARN_WAIT_SECONDS = 1
+#else//!DEBUG
+		BATWARN_WAIT_SECONDS = 60
 #endif//DEBUG
 	};
 	if (!low_percent)
@@ -105,6 +105,7 @@ void batwarn_start_checking(uint8_t flags)
 check:
 	flags = get_flags(get_charge(), flags);
 	LOG("charge: %d\n", charge);
+	// If low, check more frequently to restore gamma quickly:
 	sleep((flags & BW_BEEN_LOW) ? 1 : BATWARN_WAIT_SECONDS);
 	goto check;
 }
