@@ -37,14 +37,15 @@ set_gamma:
 	optarg=argv[argc - 1];
 	goto set_gamma;
 usage:
+#define PRINT(buf) write(1, buf, sizeof(buf))
 	{
 		char ubuf[] = GAM_HELP;
-		write(1, ubuf, sizeof(ubuf));
+		PRINT(ubuf);
 	}
 version:
 	{
 		char vbuf[] = GAM_NAME GAM_VERSION "\n";
-		write(1, vbuf, sizeof(vbuf));
+		PRINT(vbuf);
 	}
 	return 0;
 }
