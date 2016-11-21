@@ -63,6 +63,7 @@ int main(int argc, char **argv)
 	if(!(flags & BW_DEBUG) && (fork() != 0))
 		return 0;
 	signal(SIGINT, exit);
+	signal(SIGTERM, exit);
 	atexit(exit_cb);
 	batwarn_start_checking(flags);
 	return 0;
