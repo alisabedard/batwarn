@@ -84,6 +84,11 @@ static uint8_t handle_normal_battery(uint8_t flags)
 	}
 	return flags;
 }
+uint8_t get_flags(const uint8_t charge, const uint8_t flags)
+{
+	return charge > low_percent ? handle_normal_battery(flags)
+		: handle_low_battery(flags, charge);
+}
 void batwarn_start_checking(uint8_t flags)
 {
 	// Delay for checking system files:
@@ -94,14 +99,11 @@ void batwarn_start_checking(uint8_t flags)
 		BATWARN_WAIT_SECONDS = 1
 #endif//DEBUG
 	};
-	uint8_t charge;
 	if (!low_percent)
 		low_percent = BATWARN_PERCENT_LOW;
 	LOG("low_percent: %d\n", low_percent);
 check:
-	flags = (charge = get_charge()) > low_percent
-		? handle_normal_battery(flags)
-		: handle_low_battery(flags, charge);
+	flags = get_flags(get_charge(), flags);
 	LOG("charge: %d\n", charge);
 	sleep((flags & BW_BEEN_LOW) ? 1 : BATWARN_WAIT_SECONDS);
 	goto check;
