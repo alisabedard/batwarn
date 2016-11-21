@@ -8,12 +8,6 @@ enum PercentCat {
 	BATWARN_PERCENT_LOW=10,
 	BATWARN_PERCENT_FULL=90
 };
-// Delay for checking system files:
-#ifndef DEBUG
-enum { BATWARN_WAIT_SECONDS = 60 };
-#else//DEBUG
-enum { BATWARN_WAIT_SECONDS = 1 };
-#endif//!DEBUG
 // System files to check:
 #define BATWARN_SYS_BATTERY_FILE "/sys/class/power_supply/BAT0/capacity"
 #define BATWARN_SYS_AC_FILE "/sys/class/power_supply/AC/online"

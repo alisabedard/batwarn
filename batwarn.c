@@ -11,17 +11,18 @@ void batwarn_set_percent(const uint8_t pct)
 {
 	low_percent = pct;
 }
+static void print(const char * restrict msg)
+{
+	uint8_t l = 0;
+	while (msg[++l]);
+	write(2, msg, l);
+}
 static void die(const char * restrict msg, const char * restrict arg)
 {
-	uint_fast16_t l = 0;
-	while(msg[++l]);
-	write(2, msg, l);
-	if (arg) {
-		l = 0;
-		while(arg[++l]);
-		write(2, arg, l);
-	}
-	write(2, "\n", 1);
+	print(msg);
+	if (arg)
+		print(arg);
+	print("\n");
 	exit(1);
 }
 static int get_fd(const char * fn)
@@ -52,12 +53,9 @@ static void execute(const char * cmd)
 {
 	if (!system(cmd))
 		return;
-	const char warn[] = "Could not execute command: ";
-	write(2, warn, sizeof(warn));
-	uint8_t l = 0;
-	while (cmd[++l]);
-	write(2, cmd, l);
-	write(2, "\n", 1);
+	print("Cannot execute ");
+	print(cmd);
+	print("\n");
 }
 static void handle_critical_battery(const uint8_t flags)
 {
@@ -88,6 +86,14 @@ static uint8_t handle_normal_battery(uint8_t flags)
 }
 void batwarn_start_checking(uint8_t flags)
 {
+	// Delay for checking system files:
+	enum {
+#ifdef DEBUG
+		BATWARN_WAIT_SECONDS = 60
+#else//!DEBUG
+		BATWARN_WAIT_SECONDS = 1
+#endif//DEBUG
+	};
 	uint8_t charge;
 	if (!low_percent)
 		low_percent = BATWARN_PERCENT_LOW;
