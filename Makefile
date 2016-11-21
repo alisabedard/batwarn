@@ -23,17 +23,24 @@ OBJS=batwarn.o gamma.o main.o
 CFLAGS+=-std=c99
 CFLAGS+=-D_XOPEN_SOURCE=700
 CFLAGS+=${debug_flags}
-${PROG}: ${OBJS} gam
+${PROG}: ${OBJS} gam sgam
 	${CC} -o ${PROG} ${OBJS} ${LDFLAGS}
 gamobj=gam.o gamma.o
 gam: ${gamobj}
 	${CC} -o gam ${gamobj} ${LDFLAGS}
+sgamobj=sgam.o gamma.o
+sgam: ${sgamobj}
+	${CC} -o sgam ${sgamobj} ${LDFLAGS}
 debug: clean
 	make debug_flags='-DDEBUG'
 clean:
-	rm -f ${PROG} ${OBJS} gam gam.o
+	rm -f ${PROG} ${OBJS} gam ${gamobj} ${sgamobj}
 install:
 	install -d ${DESTDIR}${PREFIX}/bin
 	install -s ${PROG} ${DESTDIR}${PREFIX}/bin/
 	install -s gam ${DESTDIR}${PREFIX}/bin/
+	install -s sgam ${DESTDIR}${PREFIX}/bin/
+cppcheck:
+	cppcheck --enable=all --inconclusive --std=c11 . \
+		-DDEBUG 2> cppcheck.log
 #EOF
