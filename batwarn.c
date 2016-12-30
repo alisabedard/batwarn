@@ -1,4 +1,4 @@
-// batwarn - (C) 2015-2016 Jeffrey E. Bedard
+// batwarn - (C) 2015-2017 Jeffrey E. Bedard
 #include "batwarn.h"
 #include <fcntl.h>
 #include <stdlib.h>

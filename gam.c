@@ -1,7 +1,7 @@
 #define GAM_NAME "gam "
 #define GAM_VERSION "version 0.1 "
 #define GAM_DESC GAM_NAME "- tiny command line utility to change X11 gamma\n"
-#define GAM_COPYING "Copyright 2016, Jeffrey E. Bedard\n"
+#define GAM_COPYING "Copyright 2017, Jeffrey E. Bedard\n"
 #include "gamma.h"
 #include <stdlib.h>
 #include <unistd.h>

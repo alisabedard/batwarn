@@ -1,4 +1,4 @@
-// Copyright 2016, Jeffrey E. Bedard
+// Copyright 2017, Jeffrey E. Bedard
 #include "gamma.h"
 #include <stdlib.h>
 /* This is a bare bones utility to set the X11 display gamma from

@@ -1,4 +1,4 @@
-// batwarn - (C) 2015-2016 Jeffrey E. Bedard
+// batwarn - (C) 2015-2017 Jeffrey E. Bedard
 #ifndef BATWARN_BATWARN_H
 #define	BATWARN_BATWARN_H
 #include <stdint.h>

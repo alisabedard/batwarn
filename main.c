@@ -1,4 +1,4 @@
-// batwarn - (C) 2015-2016 Jeffrey E. Bedard
+// batwarn - (C) 2015-2017 Jeffrey E. Bedard
 #include "batwarn.h"
 #include <signal.h>
 #include <stdlib.h>
@@ -28,7 +28,7 @@ static void usage(char * arg0, const char * optstr,
 		"-p PERCENT\tSet the warning percent for gamma change.\n"
 		"-s\t\tEnable suspend at critical battery level.\n"
 		"Version " BATWARN_VERSION_STRING "\n"
-		"Copyright 2016, Jeffrey E. Bedard <jefbed@gmail.com>\n";
+		"Copyright 2017, Jeffrey E. Bedard <jefbed@gmail.com>\n";
 	write(1, helptext, sizeof(helptext));
 	exit(ec);
 }
