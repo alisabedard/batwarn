@@ -1,11 +1,11 @@
 // batwarn - (C) 2015-2016 Jeffrey E. Bedard
 #include "batwarn.h"
-#include "config.h"
-#include "gamma.h"
-#include "log.h"
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "config.h"
+#include "gamma.h"
+#include "log.h"
 static uint8_t low_percent;
 void batwarn_set_percent(const uint8_t pct)
 {
