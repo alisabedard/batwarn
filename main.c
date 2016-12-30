@@ -39,16 +39,16 @@ static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)
 	while((opt = getopt(argc, argv, optstr)) != -1)
 		switch (opt) {
 		case 'd': // debug
-			flags |= BW_DEBUG;
+			flags |= BATWARN_DEBUG;
 			break;
 		case 'H': // enable hibernate at critical
-			flags |= BW_HIBERNATE;
+			flags |= BATWARN_HIBERNATE;
 			break;
 		case 'p': // warning percentage
 			batwarn_set_percent(atoi(optarg));
 			break;
 		case 's': // enable suspend
-			flags |= BW_SUSPEND;
+			flags |= BATWARN_SUSPEND;
 			break;
 		case 'h': // help
 			usage(*argv, optstr, sizeof(optstr), 0);
@@ -60,7 +60,7 @@ static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)
 int main(int argc, char **argv)
 {
 	const uint8_t flags = parse_argv(argc, argv, 0);
-	if(!(flags & BW_DEBUG) && (fork() != 0))
+	if(!(flags & BATWARN_DEBUG) && (fork() != 0))
 		return 0;
 	signal(SIGINT, exit);
 	signal(SIGTERM, exit);

@@ -59,17 +59,17 @@ static void execute(const char * cmd)
 }
 static void handle_critical_battery(const uint8_t flags)
 {
-	if (flags & BW_HIBERNATE)
+	if (flags & BATWARN_HIBERNATE)
 		execute(BATWARN_HIBERNATE_COMMAND);
-	else if (flags & BW_SUSPEND)
+	else if (flags & BATWARN_SUSPEND)
 		execute(BATWARN_SUSPEND_COMMAND);
 }
 static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 {
-	if (!(flags & BW_BEEN_LOW)) {
+	if (!(flags & BATWARN_BEEN_LOW)) {
 		batwarn_set_gamma(BATWARN_GAMMA_WARNING);
-		flags &= ~BW_BATWARN_GAMMA_NORMAL;
-		flags |= BW_BEEN_LOW;
+		flags &= ~BATWARN_BATWARN_GAMMA_NORMAL;
+		flags |= BATWARN_BEEN_LOW;
 	}
 	if (charge < BATWARN_PERCENT_CRITICAL)
 		handle_critical_battery(flags);
@@ -77,10 +77,10 @@ static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 }
 static uint8_t handle_normal_battery(uint8_t flags)
 {
-	if (!(flags & BW_BATWARN_GAMMA_NORMAL)) {
+	if (!(flags & BATWARN_BATWARN_GAMMA_NORMAL)) {
 		batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
-		flags |= BW_BATWARN_GAMMA_NORMAL;
-		flags &= ~BW_BEEN_LOW;
+		flags |= BATWARN_BATWARN_GAMMA_NORMAL;
+		flags &= ~BATWARN_BEEN_LOW;
 	}
 	return flags;
 }
@@ -106,6 +106,6 @@ check:
 	flags = get_flags(get_charge(), flags);
 	LOG("charge: %d\n", charge);
 	// If low, check more frequently to restore gamma quickly:
-	sleep((flags & BW_BEEN_LOW) ? 1 : BATWARN_WAIT_SECONDS);
+	sleep((flags & BATWARN_BEEN_LOW) ? 1 : BATWARN_WAIT_SECONDS);
 	goto check;
 }
