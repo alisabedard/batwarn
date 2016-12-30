@@ -1,10 +1,10 @@
 // batwarn - (C) 2015-2016 Jeffrey E. Bedard
 #include "batwarn.h"
-#include "config.h"
-#include "gamma.h"
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "config.h"
+#include "gamma.h"
 static void exit_cb(void)
 {
 	batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
