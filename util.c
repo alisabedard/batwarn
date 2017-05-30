@@ -1,9 +1,8 @@
 // Copyright 2017, Jeffrey E. Bedard
 #include "util.h"
-#include <signal.h> // for signal()
-#include <stdlib.h> // for abort()
+#include <stdlib.h> // for abort(), exit()
 #include <sys/wait.h> // for wait()
-#include <unistd.h>
+#include <unistd.h> // for write(), fork(), execl()
 void bw_print(const char * restrict msg)
 {
 	unsigned int l = 0;
