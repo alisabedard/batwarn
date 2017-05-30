@@ -19,7 +19,7 @@ LDFLAGS+=-Wl,-R/usr/X11R6/lib
 LDFLAGS+=-lX11 -lXxf86vm
 PROG=batwarn
 all: ${PROG}
-OBJS=batwarn.o gamma.o main.o
+OBJS=batwarn.o gamma.o main.o util.o
 CFLAGS+=-std=c99
 CFLAGS+=-D_XOPEN_SOURCE=700
 CFLAGS+=${debug_flags}

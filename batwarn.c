@@ -1,37 +1,22 @@
 // batwarn - (C) 2015-2017 Jeffrey E. Bedard
 #include "batwarn.h"
 #include <fcntl.h> // for open()
-#include <signal.h> // for signal()
-#include <stdlib.h> // for abort()
-#include <sys/wait.h> // for wait()
+#include <stdlib.h> // for atoi()
 #include <unistd.h> // for sleep()
 #include "config.h"
 #include "gamma.h"
 #include "log.h"
+#include "util.h"
 static uint8_t low_percent;
 void batwarn_set_percent(const uint8_t pct)
 {
 	low_percent = pct;
 }
-static void print(const char * restrict msg)
-{
-	uint8_t l = 0;
-	while (msg[++l]);
-	write(2, msg, l);
-}
-static void die(const char * restrict msg, const char * restrict arg)
-{
-	print(msg);
-	if (arg)
-		print(arg);
-	print("\n");
-	exit(1);
-}
 static int get_fd(const char * fn)
 {
 	const int fd = open(fn, O_RDONLY);
 	if (fd < 0)
-		die("Cannot open ", fn);
+		bw_die("Cannot open ", fn);
 	return fd;
 }
 static int get_value(const char * fn)
@@ -40,7 +25,7 @@ static int get_value(const char * fn)
 	enum {READ_SZ = 4};
 	char buf[READ_SZ];
 	if (read(fd, buf, READ_SZ) == -1)
-		die("Cannot read ", fn);
+		bw_die("Cannot read ", fn);
 	close(fd);
 	return atoi(buf);
 }
@@ -51,39 +36,12 @@ static int8_t get_charge(void)
 	return get_value(BATWARN_SYS_AC_FILE) ? 100
 		: get_value(BATWARN_SYS_BATTERY_FILE);
 }
-static void sig_child_cb(int sig)
-{
-	if (sig != SIGCHLD)
-		abort(); // attached to the wrong signal
-	int s;
-	// Loop through potentially multiple children
-	while (wait(&s) > 0) {
-		if (WIFEXITED(s)) {
-			if (WEXITSTATUS(s) != 0)
-				print("Command exited abnormally\n");
-			else
-				print("Command exited normally\n");
-		} else if (WIFSIGNALED(s))
-			print("Terminated by a signal\n");
-	}
-}
-static void execute(const char * cmd)
-{
-	if (fork() == 0) {
-		execl("/bin/sh", "sh", "-c", cmd, NULL);
-		print("Cannot execute ");
-		print(cmd);
-		print("\n");
-		exit(1); // error
-	} else // in controlling process
-		signal (SIGCHLD, sig_child_cb);
-}
 static void handle_critical_battery(const uint8_t flags)
 {
 	if (flags & BATWARN_HIBERNATE)
-		execute(BATWARN_HIBERNATE_COMMAND);
+		bw_execute(BATWARN_HIBERNATE_COMMAND);
 	else if (flags & BATWARN_SUSPEND)
-		execute(BATWARN_SUSPEND_COMMAND);
+		bw_execute(BATWARN_SUSPEND_COMMAND);
 }
 static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 {
@@ -112,7 +70,7 @@ uint8_t get_flags(const uint8_t charge, const uint8_t flags)
 }
 void batwarn_start_checking(uint8_t flags)
 {
-	execute("echo batwarn started at `date`");
+	bw_execute("echo batwarn started at `date`");
 	// Delay for checking system files:
 	enum {
 #ifdef DEBUG
