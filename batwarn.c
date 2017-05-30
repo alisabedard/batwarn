@@ -1,10 +1,10 @@
 // batwarn - (C) 2015-2017 Jeffrey E. Bedard
 #include "batwarn.h"
-#include <fcntl.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <sys/wait.h>
-#include <unistd.h>
+#include <fcntl.h> // for open()
+#include <signal.h> // for signal()
+#include <stdlib.h> // for abort()
+#include <sys/wait.h> // for wait()
+#include <unistd.h> // for sleep()
 #include "config.h"
 #include "gamma.h"
 #include "log.h"
