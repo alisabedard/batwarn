@@ -3,11 +3,10 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <stdlib.h>
-#include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include "gamma.h"
 #include "config.h"
+#include "gamma.h"
 #include "log.h"
 static uint8_t low_percent;
 void batwarn_set_percent(const uint8_t pct)
