@@ -1,10 +1,13 @@
 // batwarn - (C) 2015-2017 Jeffrey E. Bedard
 #include "batwarn.h"
 #include <fcntl.h>
+#include <signal.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
-#include "config.h"
 #include "gamma.h"
+#include "config.h"
 #include "log.h"
 static uint8_t low_percent;
 void batwarn_set_percent(const uint8_t pct)
@@ -49,13 +52,32 @@ static int8_t get_charge(void)
 	return get_value(BATWARN_SYS_AC_FILE) ? 100
 		: get_value(BATWARN_SYS_BATTERY_FILE);
 }
+static void sig_child_cb(int sig)
+{
+	if (sig != SIGCHLD)
+		abort(); // attached to the wrong signal
+	int s;
+	// Loop through potentially multiple children
+	while (wait(&s) > 0) {
+		if (WIFEXITED(s)) {
+			if (WEXITSTATUS(s) != 0)
+				print("Command exited abnormally\n");
+			else
+				print("Command exited normally\n");
+		} else if (WIFSIGNALED(s))
+			print("Terminated by a signal\n");
+	}
+}
 static void execute(const char * cmd)
 {
-	if (!system(cmd))
-		return;
-	print("Cannot execute ");
-	print(cmd);
-	print("\n");
+	if (fork() == 0) {
+		execl("/bin/sh", "sh", "-c", cmd, NULL);
+		print("Cannot execute ");
+		print(cmd);
+		print("\n");
+		exit(1); // error
+	} else // in controlling process
+		signal (SIGCHLD, sig_child_cb);
 }
 static void handle_critical_battery(const uint8_t flags)
 {
@@ -91,6 +113,7 @@ uint8_t get_flags(const uint8_t charge, const uint8_t flags)
 }
 void batwarn_start_checking(uint8_t flags)
 {
+	execute("echo batwarn started at `date`");
 	// Delay for checking system files:
 	enum {
 #ifdef DEBUG
