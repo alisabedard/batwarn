@@ -1,7 +1,5 @@
 // batwarn - (C) 2015-2017 Jeffrey E. Bedard
 #include "batwarn.h"
-#include <fcntl.h> // for open()
-#include <stdlib.h> // for atoi()
 #include <unistd.h> // for sleep()
 #include "config.h"
 #include "gamma.h"
