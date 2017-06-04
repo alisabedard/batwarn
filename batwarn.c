@@ -52,21 +52,14 @@ uint8_t get_flags(const uint8_t charge, const uint8_t flags)
 void batwarn_start_checking(uint8_t flags)
 {
 	bw_execute("echo batwarn started at `date`");
-	// Delay for checking system files:
-	enum {
-#ifdef DEBUG
-		BATWARN_WAIT_SECONDS = 1
-#else//!DEBUG
-		BATWARN_WAIT_SECONDS = 60
-#endif//DEBUG
-	};
 	if (!low_percent)
 		low_percent = BATWARN_PERCENT_LOW;
 	LOG("low_percent: %d\n", low_percent);
-check:
-	flags = get_flags(get_charge(), flags);
-	LOG("charge: %d\n", charge);
-	// If low, check more frequently to restore gamma quickly:
-	sleep((flags & BATWARN_BEEN_LOW) ? 1 : BATWARN_WAIT_SECONDS);
-	goto check;
+	for (;;) {
+		flags = get_flags(get_charge(), flags);
+		LOG("charge: %d\n", charge);
+		enum { DELAY = 60 }; // Delay for checking system files
+		// If low, check more frequently to restore gamma quickly:
+		sleep((flags & BATWARN_BEEN_LOW) ? 1 : DELAY);
+	}
 }
