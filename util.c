@@ -1,5 +1,6 @@
 // Copyright 2017, Jeffrey E. Bedard
 #include "util.h"
+#include <fcntl.h> // for open()
 #include <stdlib.h> // for abort(), exit()
 #include <sys/wait.h> // for wait()
 #include <unistd.h> // for write(), fork(), execl()
@@ -43,4 +44,21 @@ void bw_execute(const char * restrict cmd)
 		exit(1); // error
 	} else // in controlling process
 		signal (SIGCHLD, sig_child_cb);
+}
+static int get_fd(const char * fn)
+{
+	const int fd = open(fn, O_RDONLY);
+	if (fd < 0)
+		bw_die("Cannot open ", fn);
+	return fd;
+}
+int bw_get_value(const char * fn)
+{
+	int fd = get_fd(fn);
+	enum {READ_SZ = 4};
+	char buf[READ_SZ];
+	if (read(fd, buf, READ_SZ) == -1)
+		bw_die("Cannot read ", fn);
+	close(fd);
+	return atoi(buf);
 }

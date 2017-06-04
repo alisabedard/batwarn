@@ -12,29 +12,12 @@ void batwarn_set_percent(const uint8_t pct)
 {
 	low_percent = pct;
 }
-static int get_fd(const char * fn)
-{
-	const int fd = open(fn, O_RDONLY);
-	if (fd < 0)
-		bw_die("Cannot open ", fn);
-	return fd;
-}
-static int get_value(const char * fn)
-{
-	int fd = get_fd(fn);
-	enum {READ_SZ = 4};
-	char buf[READ_SZ];
-	if (read(fd, buf, READ_SZ) == -1)
-		bw_die("Cannot read ", fn);
-	close(fd);
-	return atoi(buf);
-}
 static int8_t get_charge(void)
 {
 	/* Indicate good battery status when AC power is restored to restore
 	   gamma more quickly.  */
-	return get_value(BATWARN_SYS_AC_FILE) ? 100
-		: get_value(BATWARN_SYS_BATTERY_FILE);
+	return bw_get_value(BATWARN_SYS_AC_FILE) ? 100
+		: bw_get_value(BATWARN_SYS_BATTERY_FILE);
 }
 static void handle_critical_battery(const uint8_t flags)
 {
