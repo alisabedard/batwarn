@@ -18,6 +18,10 @@ LDFLAGS+=-Wl,-R/usr/X11R7/lib
 LDFLAGS+=-Wl,-R/usr/X11R6/lib
 LDFLAGS+=-lX11 -lXxf86vm
 PROG=batwarn
+prefix=${DESTDIR}${PREFIX}
+bindir=${prefix}/bin
+docdir=${prefix}/share/doc/${PROG}
+datadir=${prefix}/share/${PROG}
 all: ${PROG}
 OBJS=batwarn.o gamma.o main.o util.o version.o
 CFLAGS+=-std=c99
@@ -36,10 +40,12 @@ debug: clean
 clean:
 	rm -f ${PROG} ${OBJS} gam ${gamobj} ${sgamobj}
 install:
-	install -d ${DESTDIR}${PREFIX}/bin
-	install -s ${PROG} ${DESTDIR}${PREFIX}/bin/
-	install -s gam ${DESTDIR}${PREFIX}/bin/
-	install -s sgam ${DESTDIR}${PREFIX}/bin/
+	install -d ${bindir} ${docdir} ${datadir}
+	install -s ${PROG} ${bindir}
+	install -s gam ${bindir}
+	install -s sgam ${bindir}
+	install -m 0644 LICENSE ${docdir}
+	install -m 0644 README.md ${docdir}
 cppcheck:
 	cppcheck --enable=all --inconclusive --std=c11 . \
 		-DDEBUG 2> cppcheck.log
