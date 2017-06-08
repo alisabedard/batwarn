@@ -23,7 +23,6 @@ PROG=batwarn
 prefix=${DESTDIR}${PREFIX}
 bindir=${prefix}/bin
 docdir=${prefix}/share/doc/${PROG}
-datadir=${prefix}/share/${PROG}
 
 OBJS=batwarn.o gamma.o main.o util.o version.o
 CFLAGS+=-std=c99
@@ -45,7 +44,7 @@ debug: clean
 clean:
 	rm -f ${PROG} ${OBJS} gam ${gamobj} ${sgamobj}
 install:
-	install -d ${bindir} ${docdir} ${datadir}
+	install -d ${bindir} ${docdir}
 	install -s ${PROG} ${bindir}
 	install -s gam ${bindir}
 	install -s sgam ${bindir}
