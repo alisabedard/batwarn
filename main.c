@@ -1,5 +1,6 @@
 // batwarn - (C) 2015-2017 Jeffrey E. Bedard
 #include "batwarn.h"
+#include <fcntl.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -10,28 +11,30 @@ static void exit_cb(void)
 {
 	batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
 }
-__attribute__((noreturn))
-static void usage(char * arg0, const char * optstr,
-	int sz, const int8_t ec)
+static void print_version(void)
 {
-	{
-		uint8_t l = 0;
-		while (arg0[++l]);
-		write(1, arg0, l);
+	int s;
+	const char * v = batwarn_get_version(&s);
+	write(1, v, s);
+}
+_Noreturn void usage(const int ec)
+{
+	int fd = open(BATWARN_USAGE, O_RDONLY);
+	/* The following is useful for uninstalled binaries, such as on
+	 * systems on which you do not have root access, and for viewing
+	 * usage prior to installation.  */
+	if (fd < 0) // fail to the current directory:
+		fd = open("usage.txt", O_RDONLY);
+	if (fd >= 0) {
+		/* Note:  Adjust this size upwards if usage.txt
+		   no longer fits in 512 bytes.  */
+		enum { SZ = 512 };
+		char buf[SZ];
+		// Write how much we read.
+		write(1, buf, read(fd, buf, SZ));
+		// No need to close since exit will do it for us...
 	}
-	write(1, " -", 2);
-	write(1, optstr, sz);
-	write(1, "\n", 1);
-	const char helptext[] =
-		"-d\t\tDo not fork a daemon; run in the foreground.\n"
-		"-h\t\tShow this usage information.\n"
-		"-H\t\tEnable hibernation at critical battery level.\n"
-		"-p PERCENT\tSet the warning percent for gamma change.\n"
-		"-s\t\tEnable suspend at critical battery level.\n"
-		"Copyright 2017, Jeffrey E. Bedard <jefbed@gmail.com>\n";
-	write(1, helptext, sizeof(helptext));
-	const char * version = batwarn_get_version(&sz);
-	write(1, version, sz);
+	print_version();
 	exit(ec);
 }
 static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)
@@ -53,9 +56,11 @@ static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)
 			flags |= BATWARN_SUSPEND;
 			break;
 		case 'h': // help
-			usage(*argv, optstr, sizeof(optstr), 0);
+			usage(0);
+			//usage(*argv, optstr, sizeof(optstr), 0);
 		default: // usage
-			usage(*argv, optstr, sizeof(optstr), 1);
+			usage(1);
+			///usage(*argv, optstr, sizeof(optstr), 1);
 		}
 	return flags;
 }

@@ -17,16 +17,21 @@ LDFLAGS+=-L/usr/X11R7/lib
 LDFLAGS+=-Wl,-R/usr/X11R7/lib
 LDFLAGS+=-Wl,-R/usr/X11R6/lib
 LDFLAGS+=-lX11 -lXxf86vm
+
 PROG=batwarn
+
 prefix=${DESTDIR}${PREFIX}
 bindir=${prefix}/bin
 docdir=${prefix}/share/doc/${PROG}
 datadir=${prefix}/share/${PROG}
-all: ${PROG}
+
 OBJS=batwarn.o gamma.o main.o util.o version.o
 CFLAGS+=-std=c99
 CFLAGS+=-D_XOPEN_SOURCE=700
+CFLAGS+=-DBATWARN_USAGE=\"${docdir}/usage.txt\"
 CFLAGS+=${debug_flags}
+
+all: ${PROG}
 ${PROG}: ${OBJS} gam sgam
 	${CC} -o ${PROG} ${OBJS} ${LDFLAGS}
 gamobj=gam.o gamma.o
@@ -46,6 +51,7 @@ install:
 	install -s sgam ${bindir}
 	install -m 0644 LICENSE ${docdir}
 	install -m 0644 README.md ${docdir}
+	install -m 0644 usage.txt ${docdir}
 cppcheck:
 	cppcheck --enable=all --inconclusive --std=c11 . \
 		-DDEBUG 2> cppcheck.log

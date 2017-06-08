@@ -1,0 +1,7 @@
+batwarn -dhHp:s
+-d		Do not fork a daemon; run in the foreground.
+-h		Show this usage information.
+-H		Enable hibernation at critical battery level.
+-p PERCENT	Set the warning percent for gamma change.
+-s		Enable suspend at critical battery level.
+Copyright 2017, Jeffrey E. Bedard <jefbed@gmail.com>
