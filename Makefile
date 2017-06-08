@@ -51,6 +51,10 @@ install:
 	install -m 0644 LICENSE ${docdir}
 	install -m 0644 README.md ${docdir}
 	install -m 0644 usage.txt ${docdir}
+uninstall:
+	rm -f ${bindir}/${PROG} ${bindir}/gam ${bindir}/sgam
+	rm -f ${docdir}/LICENSE ${docdir}/README.md ${docdir}/usage.txt
+	rmdir ${docdir}
 cppcheck:
 	cppcheck --enable=all --inconclusive --std=c11 . \
 		-DDEBUG 2> cppcheck.log
