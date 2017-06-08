@@ -5,13 +5,14 @@
 #include <unistd.h>
 #include "config.h"
 #include "gamma.h"
+#include "version.h"
 static void exit_cb(void)
 {
 	batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
 }
 __attribute__((noreturn))
 static void usage(char * arg0, const char * optstr,
-	size_t sz, const int8_t ec)
+	int sz, const int8_t ec)
 {
 	{
 		uint8_t l = 0;
@@ -27,9 +28,10 @@ static void usage(char * arg0, const char * optstr,
 		"-H\t\tEnable hibernation at critical battery level.\n"
 		"-p PERCENT\tSet the warning percent for gamma change.\n"
 		"-s\t\tEnable suspend at critical battery level.\n"
-		"Version " BATWARN_VERSION_STRING "\n"
 		"Copyright 2017, Jeffrey E. Bedard <jefbed@gmail.com>\n";
 	write(1, helptext, sizeof(helptext));
+	const char * version = batwarn_get_version(&sz);
+	write(1, version, sz);
 	exit(ec);
 }
 static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)

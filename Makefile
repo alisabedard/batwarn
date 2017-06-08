@@ -19,7 +19,7 @@ LDFLAGS+=-Wl,-R/usr/X11R6/lib
 LDFLAGS+=-lX11 -lXxf86vm
 PROG=batwarn
 all: ${PROG}
-OBJS=batwarn.o gamma.o main.o util.o
+OBJS=batwarn.o gamma.o main.o util.o version.o
 CFLAGS+=-std=c99
 CFLAGS+=-D_XOPEN_SOURCE=700
 CFLAGS+=${debug_flags}
@@ -43,4 +43,7 @@ install:
 cppcheck:
 	cppcheck --enable=all --inconclusive --std=c11 . \
 		-DDEBUG 2> cppcheck.log
+include depend.mk
+depend:
+	${CC} -E -MM *.c > depend.mk
 #EOF
