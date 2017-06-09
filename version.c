@@ -2,7 +2,7 @@
 #include "version.h"
 #include <string.h>
 #include "config.h"
-static int get_places(const int n, const int value)
+static short get_places(const int n, const short value)
 {
 	return n > 0 ? get_places(n / 10, value + 1) : value;
 }
