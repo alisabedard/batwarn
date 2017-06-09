@@ -10,7 +10,8 @@ static inline char get_char_for_int(const int n)
 {
 	return '0' + n % 10;
 }
-static void int_to_string(const int number, short place, char * string)
+static void int_to_string(const int number, short place,
+	char * restrict string)
 {
 	if (place >= 0) {
 		string[--place] = get_char_for_int(number);
