@@ -20,9 +20,9 @@ static int8_t get_charge(void)
 static void handle_critical_battery(const uint8_t flags)
 {
 	if (flags & BATWARN_HIBERNATE)
-		bw_execute(BATWARN_HIBERNATE_COMMAND);
+		batwarn_execute(BATWARN_HIBERNATE_COMMAND);
 	else if (flags & BATWARN_SUSPEND)
-		bw_execute(BATWARN_SUSPEND_COMMAND);
+		batwarn_execute(BATWARN_SUSPEND_COMMAND);
 }
 static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 {
@@ -51,7 +51,7 @@ uint8_t get_flags(const uint8_t charge, const uint8_t flags)
 }
 void batwarn_start_checking(uint8_t flags)
 {
-	bw_execute("echo batwarn started at `date`");
+	batwarn_execute("echo batwarn started at `date`");
 	if (!low_percent)
 		low_percent = BATWARN_PERCENT_LOW;
 	LOG("low_percent: %d\n", low_percent);
