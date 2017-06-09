@@ -2,22 +2,23 @@
 # Install location:
 PREFIX=/usr
 CFLAGS+=-Wall -Wextra
+
 # Porting:
 # FreeBSD:
-CFLAGS+=-I/usr/local/include
-LDFLAGS+=-L/usr/local/lib
+#CFLAGS+=-I/usr/local/include
+#LDFLAGS+=-L/usr/local/lib
 # OpenBSD:
-CFLAGS+=-I/usr/X11R6/include
-LDFLAGS+=-L/usr/X11R6/lib
+#CFLAGS+=-I/usr/X11R6/include
+#LDFLAGS+=-L/usr/X11R6/lib
 # NetBSD:
-CFLAGS+=-I/usr/pkg/include
-CFLAGS+=-I/usr/X11R7/include
-LDFLAGS+=-L/usr/pkg/lib
-LDFLAGS+=-L/usr/X11R7/lib
+#CFLAGS+=-I/usr/pkg/include
+#CFLAGS+=-I/usr/X11R7/include
+#LDFLAGS+=-L/usr/pkg/lib
+#LDFLAGS+=-L/usr/X11R7/lib
 #LDFLAGS+=-Wl,-R/usr/X11R7/lib
 #LDFLAGS+=-Wl,-R/usr/X11R6/lib
-LDFLAGS+=-lX11 -lXxf86vm
 
+LDFLAGS+=-lX11 -lXxf86vm
 PROG=batwarn
 
 prefix=${DESTDIR}${PREFIX}
