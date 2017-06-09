@@ -10,20 +10,20 @@ static inline char get_char_for_int(const int n)
 {
 	return '0' + n % 10;
 }
-static void int_to_string(int number, int place, char * string)
+static void int_to_string(const int number, short place, char * string)
 {
 	if (place >= 0) {
 		string[--place] = get_char_for_int(number);
 		int_to_string(number / 10, place, string);
 	}
 }
-static char * get_string(int n, int * restrict size)
+static char * get_string(int n, short * restrict size)
 {
 	if (n == 0)
 		return "0";
 	enum {BUFSZ = 4};
 	static char buf[BUFSZ];
-	int p = *size = get_places(n, 0);
+	short p = *size = get_places(n, 0);
 	int_to_string(n, p, buf);
 	return buf;
 }
@@ -40,7 +40,7 @@ char * batwarn_get_version(int * restrict size_ret)
 	const char start[] = "Version ";
 	static char buf[BUFSZ];
 	char * p = buf, * q;
-	int i = sizeof start;
+	short i = sizeof start;
 	p = i + strncpy(p, start, i) - 1; // -1 to truncate terminator
 	q = get_string(BATWARN_VERSION_MAJOR, &i);
 	p = i + strncpy(p, q, i);
