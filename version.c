@@ -33,7 +33,7 @@ static char * add_separator(char * restrict buf)
 	*buf = '.';
 	return buf + 1;
 }
-char * batwarn_get_version(int * restrict size_ret)
+char * batwarn_get_version(short * restrict size_ret)
 {
 	/* A BUFSZ of 20 allows for a version number with three digits each
 	 * for major, minor, and patch versions.  */

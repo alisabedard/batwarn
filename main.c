@@ -13,7 +13,7 @@ static void exit_cb(void)
 }
 static void print_version(void)
 {
-	int s;
+	short s;
 	const char * v = batwarn_get_version(&s);
 	write(1, v, s);
 }
