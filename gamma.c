@@ -6,6 +6,6 @@ void batwarn_set_gamma(const float gamma)
 {
 	Display * dpy = XOpenDisplay(NULL);
 	XF86VidModeSetGamma(dpy, DefaultScreen(dpy),
-		&(XF86VidModeGamma){.red=gamma,.blue=gamma,.green=gamma});
+		&(XF86VidModeGamma){.red=gamma, .blue=gamma, .green=gamma});
 	XCloseDisplay(dpy);
 }
