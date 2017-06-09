@@ -2,9 +2,9 @@
 #include "version.h"
 #include <string.h>
 #include "config.h"
-static short get_places(const int n, const short value)
+static short get_places(const int n, const short places)
 {
-	return n > 0 ? get_places(n / 10, value + 1) : value;
+	return n > 0 ? get_places(n / 10, places + 1) : places;
 }
 static inline char get_char_for_int(const int n)
 {
