@@ -27,7 +27,8 @@ static void handle_critical_battery(const uint8_t flags)
 static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 {
 	if (!(flags & BATWARN_BEEN_LOW)) {
-		batwarn_set_gamma(BATWARN_GAMMA_WARNING);
+		if (!batwarn_set_gamma(BATWARN_GAMMA_WARNING))
+			flags |= BATWARN_GAMMA_FAILED;
 		flags &= ~BATWARN_BATWARN_GAMMA_NORMAL;
 		flags |= BATWARN_BEEN_LOW;
 	}
@@ -38,7 +39,8 @@ static uint8_t handle_low_battery(uint8_t flags , const uint8_t charge)
 static uint8_t handle_normal_battery(uint8_t flags)
 {
 	if (!(flags & BATWARN_BATWARN_GAMMA_NORMAL)) {
-		batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
+		if (!batwarn_set_gamma(BATWARN_GAMMA_NORMAL))
+			flags |= BATWARN_GAMMA_FAILED;
 		flags |= BATWARN_BATWARN_GAMMA_NORMAL;
 		flags &= ~BATWARN_BEEN_LOW;
 	}
@@ -49,6 +51,11 @@ uint8_t get_flags(const uint8_t charge, const uint8_t flags)
 	return charge > low_percent ? handle_normal_battery(flags)
 		: handle_low_battery(flags, charge);
 }
+static void warn_gamma_set_failed(void)
+{
+	char msg[] = "Cannot set gamma!\n";
+	write(2, msg, sizeof msg);
+}
 void batwarn_start_checking(uint8_t flags)
 {
 	batwarn_execute("echo batwarn started at `date`");
@@ -57,6 +64,8 @@ void batwarn_start_checking(uint8_t flags)
 	LOG("low_percent: %d\n", low_percent);
 	for (;;) {
 		flags = get_flags(get_charge(), flags);
+		if ((flags & BATWARN_GAMMA_FAILED))
+			warn_gamma_set_failed();
 		LOG("charge: %d\n", charge);
 		enum { DELAY = 60 }; // Delay for checking system files
 		// If low, check more frequently to restore gamma quickly:

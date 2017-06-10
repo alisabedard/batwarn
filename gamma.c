@@ -2,10 +2,13 @@
 #include "gamma.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/xf86vmode.h>
-void batwarn_set_gamma(const float gamma)
+#include <stdbool.h>
+// Returns true if successful.
+bool batwarn_set_gamma(const float gamma)
 {
 	Display * dpy = XOpenDisplay(NULL);
-	XF86VidModeSetGamma(dpy, DefaultScreen(dpy),
+	const bool r = XF86VidModeSetGamma(dpy, DefaultScreen(dpy),
 		&(XF86VidModeGamma){.red=gamma, .blue=gamma, .green=gamma});
 	XCloseDisplay(dpy);
+	return r;
 }
