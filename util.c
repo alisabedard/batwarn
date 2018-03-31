@@ -4,7 +4,8 @@
 #include <stdlib.h> // for abort(), exit()
 #include <sys/wait.h> // for wait()
 #include <unistd.h> // for write(), fork(), execl()
-void batwarn_print(const char * restrict msg)
+typedef char fd_t;
+static void batwarn_print(const char * restrict msg)
 {
 	unsigned short l = 0;
 	while (msg[++l]);
