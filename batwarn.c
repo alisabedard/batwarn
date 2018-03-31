@@ -1,4 +1,4 @@
-// batwarn - (C) 2015-2017 Jeffrey E. Bedard
+// batwarn - (C) 2015-2018 Jeffrey E. Bedard
 #include "batwarn.h"
 #include <unistd.h> // for sleep()
 #include "config.h"
