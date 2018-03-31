@@ -39,7 +39,8 @@ void batwarn_execute(const char * restrict cmd)
 	pid_t fval = fork();
 	check(fval < 0, "fork failed");
 	if(fval) // in parent process
-		signal (SIGCHLD, sig_child_cb); // attach signal handler
+		check(signal(SIGCHLD, sig_child_cb) == SIG_ERR,
+			"signal()"); // attach signal handler
 	else // in child process
 		check(execl("/bin/sh", "sh", "-c", cmd, NULL) < 0, "execl()");
 }
@@ -55,6 +56,6 @@ int bw_get_value(const char * fn)
 	enum {READ_SZ = 4};
 	char buf[READ_SZ];
 	check(read(fd, buf, READ_SZ) < 0, fn);
-	close(fd);
+	check(close(fd) < 0, "close()");
 	return atoi(buf);
 }
