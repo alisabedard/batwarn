@@ -17,14 +17,6 @@ static void check(int fail_condition, const char * restrict message)
 		exit(1);
 	}
 }
-void batwarn_quit(const char * restrict msg, const char * restrict arg)
-{
-	batwarn_print(msg);
-	if (arg)
-		batwarn_print(arg);
-	batwarn_print("\n");
-	exit(1);
-}
 static void sig_child_cb(int sig)
 {
 	if (sig != SIGCHLD)
