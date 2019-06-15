@@ -5,10 +5,15 @@
 #include "gamma.h"
 #include "log.h"
 #include "util.h"
-static uint8_t low_percent;
-void batwarn_set_percent(const uint8_t pct)
+static uint8_t critical_percent=BATWARN_PERCENT_CRITICAL,
+	       low_percent=BATWARN_PERCENT_LOW;
+void batwarn_set_percent(uint8_t const pct)
 {
 	low_percent = pct;
+}
+void batwarn_set_critical(uint8_t const pct)
+{
+	critical_percent = pct;
 }
 static int8_t get_charge(void)
 {

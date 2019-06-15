@@ -43,6 +43,9 @@ static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)
 	const char optstr[] = "dhHp:s";
 	while((opt = getopt(argc, argv, optstr)) != -1)
 		switch (opt) {
+		case 'c': // set critical percentage
+			batwarn_set_critical(atoi(optarg));
+			break;
 		case 'd': // debug
 			flags |= BATWARN_DEBUG;
 			break;

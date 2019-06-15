@@ -1,4 +1,5 @@
 batwarn -dhHp:s
+-c PERCENT	Set the critical battery level.
 -d		Do not fork a daemon; run in the foreground.
 -h		Show this usage information.
 -H		Enable hibernation at critical battery level.

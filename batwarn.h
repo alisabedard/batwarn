@@ -11,5 +11,6 @@ enum BatwarnFlags {
 	BATWARN_GAMMA_FAILED = (1 << 5)
 };
 void batwarn_start_checking(uint8_t flags);
-void batwarn_set_percent(const uint8_t pct);
+void batwarn_set_percent(uint8_t const pct);
+void batwarn_set_critical(uint8_t const pct);
 #endif//!BATWARN_BATWARN_H
