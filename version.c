@@ -51,7 +51,7 @@ char * batwarn_get_version(short * restrict size_ret)
 	p = add_separator(p);
 	q = get_string(BATWARN_VERSION_PATCH, &i);
 	p = i + strncpy(p, q, i);
-	p = 1 + strncpy(p, "\n", 1);
+	p = 1 + strncpy(p, "\n", 2); // +1 for NUL
 	*size_ret = p - buf;
 	return buf;
 }
