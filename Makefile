@@ -28,7 +28,6 @@ docdir=${prefix}/share/doc/${PROG}
 OBJS=batwarn.o gamma.o main.o util.o
 CFLAGS+=-std=c99
 CFLAGS+=-D_XOPEN_SOURCE=700
-CFLAGS+=-DBATWARN_USAGE=\"${docdir}/usage.txt\"
 CFLAGS+=${debug_flags}
 
 all: ${PROG}
