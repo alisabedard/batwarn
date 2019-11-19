@@ -1,5 +1,12 @@
 batwarn
 
+*~
+.*.swp
+gam
+sgam
+tags
+*.log
+
 # Object files
 *.o
 *.ko
