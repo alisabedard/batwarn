@@ -2,7 +2,7 @@
 # Install location:
 PREFIX=/usr
 CFLAGS+=-Wall -Wextra
-
+CFLAGS+=-ggdb
 # Porting:
 # FreeBSD:
 #CFLAGS+=-I/usr/local/include
@@ -25,7 +25,7 @@ prefix=${DESTDIR}${PREFIX}
 bindir=${prefix}/bin
 docdir=${prefix}/share/doc/${PROG}
 
-OBJS=batwarn.o gamma.o main.o util.o version.o
+OBJS=batwarn.o gamma.o main.o util.o
 CFLAGS+=-std=c99
 CFLAGS+=-D_XOPEN_SOURCE=700
 CFLAGS+=-DBATWARN_USAGE=\"${docdir}/usage.txt\"
