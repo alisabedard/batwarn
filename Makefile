@@ -1,6 +1,6 @@
 # batwarn - (C) 2015-2017 Jeffrey E. Bedard
 # Install location:
-PREFIX=/usr
+PREFIX=/usr/local
 CFLAGS+=-Wall -Wextra
 CFLAGS+=-ggdb
 # Porting:
@@ -17,14 +17,11 @@ CFLAGS+=-ggdb
 #LDFLAGS+=-L/usr/X11R7/lib
 #LDFLAGS+=-Wl,-R/usr/X11R7/lib
 #LDFLAGS+=-Wl,-R/usr/X11R6/lib
-
 LDFLAGS+=-lX11 -lXxf86vm
 PROG=batwarn
-
-prefix=${DESTDIR}${PREFIX}
-bindir=${prefix}/bin
-docdir=${prefix}/share/doc/${PROG}
-
+installpath=${DESTDIR}${PREFIX}
+bindir=${installpath}/bin
+docdir=${installpath}/share/doc/${PROG}
 OBJS=batwarn.o gamma.o main.o util.o
 CFLAGS+=-std=c99
 CFLAGS+=-D_XOPEN_SOURCE=700
