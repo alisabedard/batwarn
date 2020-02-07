@@ -1,10 +1,10 @@
 # BATWARN
 ## About
-batwarn is a simple X11 utility for notifying the user of low battery state
-on laptops and taking action under low battery conditions.  
-batwarn sets a high display gamma whenever the battery drops
-below a set percent value.  The polling frequency increases at this point,
-in order to quickly restore normal gamma when power is restored.
+batwarn is a simple X11 utility for notifying the user of low battery
+state on laptops and taking action under low battery conditions.  
+batwarn sets a high display gamma whenever the battery drops below
+a set percent value.  The polling frequency increases at this point,
+in order to quickly restore normal gamma when power is restored. 
 When battery reaches a set critical value, batwarn can suspend or
 hibernate the system.
 
