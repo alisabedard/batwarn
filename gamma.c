@@ -6,9 +6,13 @@
 // Returns true if successful.
 bool batwarn_set_gamma(const float gamma)
 {
-	Display * dpy = XOpenDisplay(NULL);
-	const bool r = XF86VidModeSetGamma(dpy, DefaultScreen(dpy),
-		&(XF86VidModeGamma){.red=gamma, .blue=gamma, .green=gamma});
-	XCloseDisplay(dpy);
-	return r;
+  bool r;
+  Display * dpy = XOpenDisplay(NULL);
+  if (dpy) {
+    r = XF86VidModeSetGamma(dpy, DefaultScreen(dpy),
+      &(XF86VidModeGamma){.red=gamma, .blue=gamma, .green=gamma});
+    XCloseDisplay(dpy);
+  } else
+    r=false;
+  return r;
 }
