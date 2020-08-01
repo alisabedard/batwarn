@@ -29,16 +29,21 @@ static void handle_critical_battery(const uint8_t flags)
   else if (flags & BATWARN_SUSPEND)
     batwarn_execute(BATWARN_SUSPEND_COMMAND);
 }
-static uint8_t handle_low_battery(uint8_t flags, const uint8_t charge)
+static uint8_t handle_low_battery(uint8_t flags, const int8_t charge)
 {
-  if (!(flags & BATWARN_BEEN_LOW)) {
-    if (!batwarn_set_gamma(BATWARN_GAMMA_WARNING))
-      flags |= BATWARN_GAMMA_FAILED;
-    flags &= ~BATWARN_BATWARN_GAMMA_NORMAL;
-    flags |= BATWARN_BEEN_LOW;
+  if (charge < 0) { /* This is sometimes above 100 when fully charged.  */
+    flags |= BATWARN_BATWARN_GAMMA_NORMAL; /* reset */
+    flags &= ~BATWARN_BEEN_LOW; /* in case of resume, when now charged */
+  } else {
+    if (!(flags & BATWARN_BEEN_LOW)) {
+      if (!batwarn_set_gamma(BATWARN_GAMMA_WARNING))
+        flags |= BATWARN_GAMMA_FAILED;
+      flags &= ~BATWARN_BATWARN_GAMMA_NORMAL;
+      flags |= BATWARN_BEEN_LOW;
+    }
+    if (charge < BATWARN_PERCENT_CRITICAL)
+      handle_critical_battery(flags);
   }
-  if (charge < BATWARN_PERCENT_CRITICAL)
-    handle_critical_battery(flags);
   return flags;
 }
 static uint8_t handle_normal_battery(uint8_t flags)
@@ -51,7 +56,7 @@ static uint8_t handle_normal_battery(uint8_t flags)
   }
   return flags;
 }
-uint8_t get_flags(const uint8_t charge, const uint8_t flags)
+uint8_t get_flags(const int8_t charge, const uint8_t flags)
 {
   return charge > low_percent ? handle_normal_battery(flags)
   : handle_low_battery(flags, charge);
