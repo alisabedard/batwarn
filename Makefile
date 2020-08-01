@@ -1,5 +1,6 @@
 # batwarn - (C) 2015-2017 Jeffrey E. Bedard
 # Install location:
+VERSION=20200801
 PREFIX=/usr/local
 CFLAGS+=-Wall -Wextra
 CFLAGS+=-ggdb
