@@ -1,7 +1,7 @@
 // batwarn - (C) 2015-2017 Jeffrey E. Bedard
 #ifndef BATWARN_CONFIG_H
 #define	BATWARN_CONFIG_H
-#define BATWARN_VERSION "20191117"
+#define BATWARN_VERSION "20200804"
 enum BatwarnSettings {
     ENABLE_HIBERNATE_BY_DEFAULT=1,
     ENABLE_SUSPEND_BY_DEFAULT=0
