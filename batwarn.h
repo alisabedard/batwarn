@@ -3,12 +3,9 @@
 #define	BATWARN_BATWARN_H
 #include <stdint.h>
 enum BatwarnFlags {
-	BATWARN_BEEN_LOW = 1,
-	BATWARN_BATWARN_GAMMA_NORMAL = (1 << 1),
-	BATWARN_DEBUG = (1 << 2),
-	BATWARN_HIBERNATE = (1 << 3),
-	BATWARN_SUSPEND = (1 << 4),
-	BATWARN_GAMMA_FAILED = (1 << 5)
+	BATWARN_ENABLE_DEBUG = 1,
+	BATWARN_ENABLE_HIBERNATE = 2,
+	BATWARN_ENABLE_SUSPEND = 4
 };
 void batwarn_start_checking(uint8_t flags);
 void batwarn_set_percent(uint8_t const pct);

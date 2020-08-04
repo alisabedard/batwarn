@@ -15,70 +15,33 @@ void batwarn_set_critical(uint8_t const pct)
 {
   critical_percent = pct;
 }
-static int8_t get_charge(void)
+static uint8_t get_charge(void)
 {
   /* Indicate good battery status when AC power is restored to restore
      gamma more quickly.  */
-  return bw_get_value(BATWARN_SYS_AC_FILE) ? 100
-  : bw_get_value(BATWARN_SYS_BATTERY_FILE);
+  return batwarn_get_value(BATWARN_SYS_AC_FILE) ? 100 :
+    batwarn_get_value(BATWARN_SYS_BATTERY_FILE);
 }
-static void handle_critical_battery(const uint8_t flags)
-{
-  if (flags & BATWARN_HIBERNATE)
-    batwarn_execute(BATWARN_HIBERNATE_COMMAND);
-  else if (flags & BATWARN_SUSPEND)
-    batwarn_execute(BATWARN_SUSPEND_COMMAND);
-}
-static uint8_t handle_low_battery(uint8_t flags, const int8_t charge)
-{
-  if (charge < 0) { /* This is sometimes above 100 when fully charged.  */
-    flags |= BATWARN_BATWARN_GAMMA_NORMAL; /* reset */
-    flags &= ~BATWARN_BEEN_LOW; /* in case of resume, when now charged */
-  } else {
-    if (!(flags & BATWARN_BEEN_LOW)) {
-      if (!batwarn_set_gamma(BATWARN_GAMMA_WARNING))
-        flags |= BATWARN_GAMMA_FAILED;
-      flags &= ~BATWARN_BATWARN_GAMMA_NORMAL;
-      flags |= BATWARN_BEEN_LOW;
-    }
-    if (charge < BATWARN_PERCENT_CRITICAL)
-      handle_critical_battery(flags);
+static void perform_action_for_charge(uint8_t const charge,
+  uint8_t const flags) {
+  if (charge < BATWARN_PERCENT_CRITICAL) {
+    if (flags & BATWARN_ENABLE_HIBERNATE)
+      batwarn_execute(BATWARN_HIBERNATE_COMMAND);
+    else if (flags & BATWARN_ENABLE_SUSPEND)
+      batwarn_execute(BATWARN_SUSPEND_COMMAND);
   }
-  return flags;
-}
-static uint8_t handle_normal_battery(uint8_t flags)
-{
-  if (!(flags & BATWARN_BATWARN_GAMMA_NORMAL)) {
-    if (!batwarn_set_gamma(BATWARN_GAMMA_NORMAL))
-      flags |= BATWARN_GAMMA_FAILED;
-    flags |= BATWARN_BATWARN_GAMMA_NORMAL;
-    flags &= ~BATWARN_BEEN_LOW;
-  }
-  return flags;
-}
-uint8_t get_flags(const int8_t charge, const uint8_t flags)
-{
-  return charge > low_percent ? handle_normal_battery(flags)
-  : handle_low_battery(flags, charge);
-}
-static void warn_gamma_set_failed(void)
-{
-  char msg[] = "Cannot set gamma!\n";
-  write(2, msg, sizeof msg);
 }
 void batwarn_start_checking(uint8_t flags)
 {
-  batwarn_execute("echo batwarn started at `date`");
+  //  batwarn_execute("echo batwarn started at `date`");
   if (!low_percent)
     low_percent = BATWARN_PERCENT_LOW;
   LOG("low_percent: %d\n", low_percent);
   for (;;) {
-    flags = get_flags(get_charge(), flags);
-    if ((flags & BATWARN_GAMMA_FAILED))
-      warn_gamma_set_failed();
-    LOG("charge: %d\n", charge);
-    enum { DELAY = 60 }; // Delay for checking system files
-    // If low, check more frequently to restore gamma quickly:
-    sleep((flags & BATWARN_BEEN_LOW) ? 1 : DELAY);
+    uint8_t const charge = get_charge();
+    batwarn_set_gamma(charge > BATWARN_PERCENT_FULL ? BATWARN_GAMMA_NORMAL :
+      BATWARN_GAMMA_WARNING);
+    perform_action_for_charge(charge, flags);
+    sleep(3);
   }
 }
