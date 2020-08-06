@@ -9,9 +9,8 @@ enum BatwarnSettings {
 #define BATWARN_GAMMA_NORMAL    1.0
 #define BATWARN_GAMMA_WARNING   5.0
 enum BatwarnLevel {
-    BATWARN_PERCENT_CRITICAL=10,
     BATWARN_PERCENT_LOW=15,
-    BATWARN_PERCENT_FULL=80
+    BATWARN_PERCENT_CRITICAL=(BATWARN_PERCENT_LOW>>1)
 };
 // System files to check:
 #define BATWARN_SYS_BATTERY_FILE "/sys/class/power_supply/BAT0/capacity"
