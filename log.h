@@ -6,7 +6,7 @@
 #endif//LOG
 #ifdef DEBUG
 #include <stdio.h>
-#define LOG(...) dprintf(STDERR_FILENO, __VA_ARGS__)
+#define LOG(...) fprintf(stderr, __VA_ARGS__)
 #else//!DEBUG
 #define LOG(...)
 #endif//DEBUG

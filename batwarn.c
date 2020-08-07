@@ -39,6 +39,7 @@ void batwarn_start_checking(uint8_t flags)
   LOG("low_percent: %d\n", low_percent);
   for (;;) {
     uint8_t const charge = get_charge();
+    LOG("charge: %d\n", charge);
     batwarn_set_gamma(charge < BATWARN_PERCENT_LOW ? BATWARN_GAMMA_WARNING :
       BATWARN_GAMMA_NORMAL);
     perform_action_for_charge(charge, flags);
