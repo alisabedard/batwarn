@@ -4,7 +4,6 @@
 #include "gamma.h"
 #include "util.h"
 #include <errno.h>
-#include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,7 +16,7 @@ static void exit_cb(void)
 }
 _Noreturn void usage(const int ec)
 {
-  puts(
+  fputs(
     "batwarn -dhHp:s\n"
     "-c PERCENT	Set the critical battery level.\n"
     "-d		Do not fork a daemon; run in the foreground.\n"
@@ -26,7 +25,7 @@ _Noreturn void usage(const int ec)
     "-p PERCENT	Set the warning percent for gamma change.\n"
     "-s		Enable suspend at critical battery level.\n"
     "Copyright 2017-2019, Jeffrey E. Bedard <jefbed@gmail.com>\n"
-    "Version " BATWARN_VERSION
+    "Version " BATWARN_VERSION, ec ? stderr : stdout
   );
   exit(ec);
 }
@@ -62,6 +61,10 @@ static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)
 }
 int main(int argc, char **argv)
 {
+  /* Use flock to ensure only one instance is running.  This makes
+   * it easier to put batwarn in .xinitrc without having to do
+   * process management.  TODO:  Allow one instance of batwarn per
+   * display.  */
   fd_t const lock_fd = open("/tmp/batwarn.lock", O_RDWR|O_CREAT, 0666);
   flock(lock_fd, LOCK_EX | LOCK_NB);
   if (errno == EWOULDBLOCK) {
