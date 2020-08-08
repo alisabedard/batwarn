@@ -1,6 +1,6 @@
 # batwarn - (C) 2015-2017 Jeffrey E. Bedard
 # Install location:
-VERSION=20200801
+VERSION=20200807
 PREFIX=/usr/local
 CFLAGS+=-Wall -Wextra
 CFLAGS+=-ggdb
@@ -23,7 +23,7 @@ PROG=batwarn
 installpath=${DESTDIR}${PREFIX}
 bindir=${installpath}/bin
 docdir=${installpath}/share/doc/${PROG}
-OBJS=batwarn.o gamma.o main.o util.o
+OBJS=batwarn.o gamma.o
 CFLAGS+=-std=c99
 CFLAGS+=-D_XOPEN_SOURCE=700
 CFLAGS+=${debug_flags}
