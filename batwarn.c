@@ -11,7 +11,7 @@
 #include <sys/wait.h> // for wait
 #include <unistd.h> // for write, fork, execl, sleep
 typedef int16_t fd_t;
-static void check(int fail_condition, const char * restrict message)
+static void check(int fail_condition, char const * restrict message)
 {
   if (fail_condition) {
     puts(message);
@@ -34,7 +34,7 @@ static void sig_child_cb(int sig)
       puts("Terminated by a signal");
   }
 }
-void batwarn_execute(const char * restrict cmd)
+static void batwarn_execute(char const * restrict cmd)
 {
   pid_t fval = fork();
   check(fval < 0, "fork failed");
@@ -44,7 +44,7 @@ void batwarn_execute(const char * restrict cmd)
   else // in child process
     check(execl("/bin/sh", "sh", "-c", cmd, NULL) < 0, "execl()");
 }
-int batwarn_get_value(const char * fn)
+static uint8_t batwarn_get_value(char const * fn)
 {
   enum {READ_SZ = 4};
   char buf[READ_SZ];
@@ -54,16 +54,6 @@ int batwarn_get_value(const char * fn)
   close(fd);
   return atoi(buf);
 }
-static uint8_t critical_percent=BATWARN_PERCENT_CRITICAL,
-               low_percent=BATWARN_PERCENT_LOW;
-void batwarn_set_percent(uint8_t const charge)
-{
-  low_percent = charge;
-}
-void batwarn_set_critical(uint8_t const charge)
-{
-  critical_percent = charge;
-}
 static uint8_t get_charge(void)
 {
   /* Indicate good battery status when AC power is restored to restore
@@ -72,26 +62,23 @@ static uint8_t get_charge(void)
     batwarn_get_value(BATWARN_SYS_BATTERY_FILE);
 }
 static void perform_action_for_charge(uint8_t const charge,
-  uint8_t const flags) {
-  if (charge < BATWARN_PERCENT_CRITICAL) {
+  uint8_t const flags, uint8_t const critical) {
+  if (charge <= critical) {
     if (flags & BATWARN_ENABLE_HIBERNATE)
       batwarn_execute(BATWARN_HIBERNATE_COMMAND);
     else if (flags & BATWARN_ENABLE_SUSPEND)
       batwarn_execute(BATWARN_SUSPEND_COMMAND);
   }
 }
-void batwarn_start_checking(uint8_t flags)
+_Noreturn static void batwarn_start_checking(uint8_t const flags,
+  uint8_t const percent)
 {
-  //  batwarn_execute("echo batwarn started at `date`");
-  if (!low_percent)
-    low_percent = BATWARN_PERCENT_LOW;
-  fprintf(stderr, "low_percent: %d\n", low_percent);
+  uint8_t const critical = percent >> 1; // half
   for (;;) {
     uint8_t const charge = get_charge();
-    fprintf(stderr, "charge: %d\n", charge);
-    batwarn_set_gamma(charge <= BATWARN_PERCENT_LOW ? BATWARN_GAMMA_WARNING :
+    batwarn_set_gamma(charge <= BATWARN_PERCENT ? BATWARN_GAMMA_WARNING :
       BATWARN_GAMMA_NORMAL);
-    perform_action_for_charge(charge, flags);
+    perform_action_for_charge(charge, flags, critical);
     sleep(3);
   }
 }
@@ -99,11 +86,10 @@ static void exit_cb(void)
 {
   batwarn_set_gamma(BATWARN_GAMMA_NORMAL);
 }
-_Noreturn void usage(const int ec)
+_Noreturn static void usage(const int ec)
 {
   fputs(
     "batwarn -dhHp:s\n"
-    "-c PERCENT	Set the critical battery level.\n"
     "-d		Do not fork a daemon; run in the foreground.\n"
     "-h		Show this usage information.\n"
     "-H		Enable hibernation at critical battery level.\n"
@@ -114,15 +100,15 @@ _Noreturn void usage(const int ec)
   );
   exit(ec);
 }
-static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)
+static enum BatwarnFlags parse_argv(int argc, char ** argv,
+  uint8_t * percent)
 {
+  enum BatwarnFlags flags;
   int8_t opt;
-  const char optstr[] = "c:dhHp:s";
+  char const optstr[] = "c:dhHp:s";
+  flags = 0;
   while((opt = getopt(argc, argv, optstr)) != -1)
     switch (opt) {
-    case 'c': // set critical percentage
-      batwarn_set_critical(atoi(optarg));
-      break;
     case 'd': // debug
       flags |= BATWARN_ENABLE_DEBUG;
       break;
@@ -130,7 +116,7 @@ static uint8_t parse_argv(int argc, char ** argv, uint8_t flags)
       flags |= BATWARN_ENABLE_HIBERNATE;
       break;
     case 'p': // warning percentage
-      batwarn_set_percent(atoi(optarg));
+      *percent = atoi(optarg);
       break;
     case 's': // enable suspend
       flags |= BATWARN_ENABLE_SUSPEND;
@@ -154,14 +140,17 @@ int main(int argc, char **argv)
     fputs("batwarn already running!\n", stderr);
     exit(1);
   } else {
-    const uint8_t flags = parse_argv(argc, argv, 0);
-
+    uint8_t percent;
+    uint8_t flags;
+    percent = BATWARN_PERCENT; // default
+    // possibly override percent
+    flags = parse_argv(argc, argv, &percent);
     if ((flags & BATWARN_ENABLE_DEBUG) || !fork()) {
       fputs("batwarn polling...\n", stderr);
       signal(SIGINT, exit);
       signal(SIGTERM, exit);
       atexit(exit_cb);
-      batwarn_start_checking(flags);
+      batwarn_start_checking(flags, percent);
     }
   }
   return 0;
