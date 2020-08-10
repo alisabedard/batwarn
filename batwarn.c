@@ -44,7 +44,9 @@ static void batwarn_execute(char const * restrict cmd)
   else // in child process
     check(execl("/bin/sh", "sh", "-c", cmd, NULL) < 0, "execl()");
 }
-static uint8_t batwarn_get_value(char const * fn)
+/* Linux sets the charge to 257 if on battery, so we need a
+ * 16 bit int here.  */
+static uint16_t batwarn_get_value(char const * fn)
 {
   enum {READ_SZ = 4};
   char buf[READ_SZ];
@@ -53,13 +55,6 @@ static uint8_t batwarn_get_value(char const * fn)
   read(fd, buf, READ_SZ);
   close(fd);
   return atoi(buf);
-}
-static uint8_t get_charge(void)
-{
-  /* Indicate good battery status when AC power is restored to restore
-     gamma more quickly.  */
-  return batwarn_get_value(BATWARN_SYS_AC_FILE) ? 100 :
-    batwarn_get_value(BATWARN_SYS_BATTERY_FILE);
 }
 static void perform_action_for_charge(uint8_t const charge,
   uint8_t const flags, uint8_t const critical) {
@@ -75,7 +70,7 @@ _Noreturn static void batwarn_start_checking(uint8_t const flags,
 {
   uint8_t const critical = percent >> 1; // half
   for (;;) {
-    uint8_t const charge = get_charge();
+    uint16_t const charge = batwarn_get_value(BATWARN_SYS_BATTERY_FILE);
     batwarn_set_gamma(charge <= BATWARN_PERCENT ? BATWARN_GAMMA_WARNING :
       BATWARN_GAMMA_NORMAL);
     perform_action_for_charge(charge, flags, critical);
