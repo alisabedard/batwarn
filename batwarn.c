@@ -70,7 +70,8 @@ _Noreturn static void batwarn_start_checking(uint8_t const flags,
 {
   uint8_t const critical = percent >> 1; // half
   for (;;) {
-    uint16_t const charge = batwarn_get_value(BATWARN_SYS_BATTERY_FILE);
+    uint16_t const charge = batwarn_get_value(BATWARN_SYS_AC_FILE) ? 100 
+      : batwarn_get_value(BATWARN_SYS_BATTERY_FILE);
     batwarn_set_gamma(charge <= BATWARN_PERCENT ? BATWARN_GAMMA_WARNING :
       BATWARN_GAMMA_NORMAL);
     perform_action_for_charge(charge, flags, critical);

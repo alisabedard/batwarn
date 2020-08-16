@@ -9,6 +9,7 @@ enum BatwarnLevel {
 };
 // System files to check:
 #define BATWARN_SYS_BATTERY_FILE "/sys/class/power_supply/BAT0/capacity"
+#define BATWARN_SYS_AC_FILE "/sys/class/power_supply/BAT0/capacity"
 #ifndef USE_SYSTEMD
 //#define BATWARN_SUSPEND_COMMAND "sudo pm-suspend"
 // ensure the following command has suid bit set
