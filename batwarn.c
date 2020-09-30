@@ -74,7 +74,7 @@ _Noreturn static void batwarn_start_checking(uint8_t const flags,
       : batwarn_get_value(BATWARN_SYS_BATTERY_FILE);
     if (flags & BATWARN_ENABLE_DEBUG)
       fprintf(stderr, "charge: %d\n", charge);
-    batwarn_set_gamma(charge <= BATWARN_PERCENT ? BATWARN_GAMMA_WARNING :
+    batwarn_set_gamma(charge <= percent ? BATWARN_GAMMA_WARNING :
       BATWARN_GAMMA_NORMAL);
     perform_action_for_charge(charge, flags, critical);
     sleep(1);
