@@ -44,9 +44,9 @@ static void batwarn_execute(char const * restrict cmd)
   else // in child process
     check(execl("/bin/sh", "sh", "-c", cmd, NULL) < 0, "execl()");
 }
-/* Linux sets the charge to 257 if on battery, so we need a
+/* Linux sets the charge to 257 if on a fully charged battery, so we need a
  * 16 bit int here.  */
-static uint16_t batwarn_get_value(char const * fn)
+static int16_t batwarn_get_value(char const * fn)
 {
   enum {READ_SZ = 4};
   char buf[READ_SZ];
@@ -56,7 +56,7 @@ static uint16_t batwarn_get_value(char const * fn)
   close(fd);
   return atoi(buf);
 }
-static void perform_action_for_charge(uint8_t const charge,
+static void perform_action_for_charge(int16_t const charge,
   uint8_t const flags, uint8_t const critical) {
   if (charge <= critical) {
     if (flags & BATWARN_ENABLE_HIBERNATE)
@@ -66,11 +66,10 @@ static void perform_action_for_charge(uint8_t const charge,
   }
 }
 _Noreturn static void batwarn_start_checking(uint8_t const flags,
-  uint8_t const percent)
-{
+  uint8_t const percent) {
   uint8_t const critical = percent >> 1; // half
   for (;;) {
-    uint16_t const charge = batwarn_get_value(BATWARN_SYS_AC_FILE) ? 100 
+    int16_t const charge = batwarn_get_value(BATWARN_SYS_AC_FILE) ? 100
       : batwarn_get_value(BATWARN_SYS_BATTERY_FILE);
     if (flags & BATWARN_ENABLE_DEBUG)
       fprintf(stderr, "charge: %d\n", charge);
