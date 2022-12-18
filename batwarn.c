@@ -1,4 +1,4 @@
-// batwarn - (C) 2015-2018 Jeffrey E. Bedard
+// batwarn - (C) 2015-2018 Alisa Bedard
 #include "BatwarnFlags.h"
 #include "config.h"
 #include "gamma.h"
@@ -92,7 +92,7 @@ _Noreturn static void usage(const int ec)
     "-H		Enable hibernation at critical battery level.\n"
     "-p PERCENT	Set the warning percent for gamma change.\n"
     "-s		Enable suspend at critical battery level.\n"
-    "Copyright 2017-2020, Jeffrey E. Bedard <jefbed@gmail.com>\n"
+    "Copyright 2017-2020, Alisa Bedard <jefbed@gmail.com>\n"
     "Version " BATWARN_VERSION, ec ? stderr : stdout
   );
   exit(ec);

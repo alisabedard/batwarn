@@ -1,4 +1,4 @@
-# batwarn - (C) 2015-2017 Jeffrey E. Bedard
+# batwarn - (C) 2015-2017 Alisa Bedard
 # Install location:
 VERSION=20200812
 PREFIX=/usr/local

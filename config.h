@@ -1,4 +1,4 @@
-// batwarn - (C) 2015-2017 Jeffrey E. Bedard
+// batwarn - (C) 2015-2017 Alisa Bedard
 #ifndef BATWARN_CONFIG_H
 #define	BATWARN_CONFIG_H
 #define BATWARN_VERSION "20200804"
